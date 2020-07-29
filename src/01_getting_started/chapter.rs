@@ -1,10 +1,15 @@
-extern crate gl;
 extern crate glfw;
 
 use glfw::{Action, Key};
 use std::sync::mpsc::Receiver;
 
 use glfw::{Context, Glfw, Window, WindowEvent};
+
+use std::ptr;
+use std::str;
+
+extern crate gl;
+use gl::types::*;
 
 const SCREEN_WIDTH: u32 = 800;
 const SCREEN_HEIGHT: u32 = 600;
@@ -46,6 +51,42 @@ pub fn process_events(window: &mut glfw::Window, events: &Receiver<(f64, glfw::W
                 window.set_should_close(true)
             }
             _ => {}
+        }
+    }
+}
+
+#[allow(dead_code)] // this is actually used in lots of places
+pub fn check_for_errors(item: u32, status_type: u32) {
+    let mut success = gl::FALSE as GLint;
+    let mut info_log: Vec<u8> = Vec::with_capacity(512);
+    unsafe {
+        info_log.set_len(512 - 1); // skip \0 char
+        if status_type == gl::COMPILE_STATUS {
+            gl::GetShaderiv(item, status_type, &mut success);
+        } else if status_type == gl::LINK_STATUS {
+            gl::GetProgramiv(item, status_type, &mut success);
+        }
+        if success != gl::TRUE as GLint {
+            if status_type == gl::COMPILE_STATUS {
+                gl::GetShaderInfoLog(
+                    item,
+                    512,
+                    ptr::null_mut(),
+                    info_log.as_mut_ptr() as *mut GLchar,
+                );
+                eprintln!(
+                    "Compilation failed\n{}",
+                    str::from_utf8_unchecked(&info_log)
+                );
+            } else if status_type == gl::LINK_STATUS {
+                gl::GetProgramInfoLog(
+                    item,
+                    512,
+                    ptr::null_mut(),
+                    info_log.as_mut_ptr() as *mut GLchar,
+                );
+                eprintln!("Linking failed\n{}", str::from_utf8_unchecked(&info_log));
+            }
         }
     }
 }

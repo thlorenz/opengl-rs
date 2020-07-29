@@ -21,5 +21,5 @@ name="01_02_hello_window_clear"
 path="./src/01_getting_started/02_hello_window_clear.rs"
 
 [[bin]]
-name="01_03_hello_triangle"
-path="./src/01_getting_started/03_hello_triangle.rs"
+name="01_03_0_hello_triangle"
+path= "src/01_getting_started/03_0_hello_triangle.rs"
