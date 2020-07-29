@@ -1,8 +1,7 @@
 mod common;
-
 extern crate glfw;
 
-use glfw::{Context, Key};
+use glfw::Context;
 
 extern crate gl;
 
@@ -32,8 +31,12 @@ pub fn main() {
     gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 
     while !window.should_close() {
+        common::process_events(&mut window, &events);
+        unsafe {
+            gl::ClearColor(0.2, 0.3, 0.3, 1.0);
+            gl::Clear(gl::COLOR_BUFFER_BIT);
+        }
         window.swap_buffers();
         ctx.poll_events();
-        common::process_events(&mut window, &events);
     }
 }

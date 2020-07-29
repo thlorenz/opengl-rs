@@ -1,5 +1,5 @@
 [package]
-name = "opengl-rs"
+name = "opengl"
 version = "0.1.0"
 authors = ["Thorsten Lorenz <thlorenz@gmx.de>"]
 edition = "2018"
@@ -15,3 +15,7 @@ image = "0.23.8"
 [[bin]]
 name="01_01_hello_window"
 path="./src/01_getting_started/01_hello_window.rs"
+
+[[bin]]
+name="01_02_hello_window_clear"
+path="./src/01_getting_started/02_hello_window_clear.rs"
