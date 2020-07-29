@@ -9,12 +9,14 @@ use glfw::{Context, Glfw, Window, WindowEvent};
 const SCREEN_WIDTH: u32 = 800;
 const SCREEN_HEIGHT: u32 = 600;
 
+#[allow(dead_code)] // this is actually used in lots of places
 pub fn init_window() -> (Glfw, Window, Receiver<(f64, WindowEvent)>) {
     let mut ctx = glfw::init(glfw::FAIL_ON_ERRORS.clone()).unwrap();
     ctx.window_hint(glfw::WindowHint::ContextVersion(3, 3));
     ctx.window_hint(glfw::WindowHint::OpenGlProfile(
         glfw::OpenGlProfileHint::Core,
     ));
+    #[cfg(target_os = "macos")]
     ctx.window_hint(glfw::WindowHint::OpenGlForwardCompat(true));
 
     let (mut window, events) = ctx

@@ -2,7 +2,7 @@ mod chapter;
 
 extern crate glfw;
 
-use glfw::{Context, Key};
+use glfw::Context;
 
 extern crate gl;
 
