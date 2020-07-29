@@ -23,3 +23,7 @@ path="./src/01_getting_started/02_hello_window_clear.rs"
 [[bin]]
 name="01_03_0_hello_triangle"
 path= "src/01_getting_started/03_0_hello_triangle.rs"
+
+[[bin]]
+name="01_03_1_hello_triangle_indexed"
+path="./src/01_getting_started/03_1_hello_triangle_indexed.rs"
