@@ -5,11 +5,12 @@ use std::sync::mpsc::Receiver;
 
 use glfw::{Context, Glfw, Window, WindowEvent};
 
-use std::ptr;
 use std::str;
+use std::{mem, ptr};
 
 extern crate gl;
 use gl::types::*;
+use std::ffi::c_void;
 
 const SCREEN_WIDTH: u32 = 800;
 const SCREEN_HEIGHT: u32 = 600;
@@ -88,5 +89,46 @@ pub fn check_for_errors(item: u32, status_type: u32) {
                 eprintln!("Linking failed\n{}", str::from_utf8_unchecked(&info_log));
             }
         }
+    }
+}
+
+#[allow(dead_code)]
+pub fn create_triangle_vao() -> u32 {
+    unsafe {
+        #[rustfmt::skip]
+        let vertices: [f32;9] = [
+           -0.5, -0.5, 0.0,
+            0.5, -0.5, 0.0,
+            0.0,  0.5, 0.0
+        ];
+
+        let (mut vbo, mut vao) = (0, 0);
+        gl::GenVertexArrays(1, &mut vao);
+        gl::GenBuffers(1, &mut vbo);
+        {
+            gl::BindVertexArray(vao);
+            gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
+
+            gl::BufferData(
+                gl::ARRAY_BUFFER,
+                (vertices.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
+                &vertices[0] as *const f32 as *const c_void,
+                gl::STATIC_DRAW,
+            );
+
+            gl::VertexAttribPointer(
+                0,
+                3,
+                gl::FLOAT,
+                gl::FALSE,
+                3 * mem::size_of::<GLfloat>() as GLsizei,
+                ptr::null(),
+            );
+            gl::EnableVertexAttribArray(0);
+
+            gl::BindBuffer(gl::ARRAY_BUFFER, 0);
+            gl::BindVertexArray(0);
+        }
+        vao
     }
 }
