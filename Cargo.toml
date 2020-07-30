@@ -27,3 +27,7 @@ path= "src/01_getting_started/03_0_hello_triangle.rs"
 [[bin]]
 name="01_03_1_hello_triangle_indexed"
 path="./src/01_getting_started/03_1_hello_triangle_indexed.rs"
+
+[[bin]]
+name="01_04_0_shaders_uniform"
+path="./src/01_getting_started/04_0_shaders_uniform.rs"
