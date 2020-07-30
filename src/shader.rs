@@ -1,0 +1,94 @@
+use std::ffi::{CStr, CString};
+use std::ptr;
+use std::str;
+
+extern crate gl;
+use gl::types::*;
+use std::error::Error;
+
+#[allow(dead_code)]
+pub struct Shader {
+    pub id: u32,
+}
+
+#[allow(dead_code)]
+impl Shader {
+    pub fn new(vertex_path: &str, frag_path: &str) -> Result<Shader, Box<dyn Error>> {
+        let vert_buffer = std::fs::read(&vertex_path)?;
+        let frag_buffer = std::fs::read(&frag_path)?;
+        let shader_program = unsafe {
+            let vertex_shader = gl::CreateShader(gl::VERTEX_SHADER);
+            let c_str_vert = CString::new(vert_buffer).unwrap();
+            gl::ShaderSource(vertex_shader, 1, &c_str_vert.as_ptr(), ptr::null());
+            gl::CompileShader(vertex_shader);
+            check_for_errors(vertex_shader, gl::COMPILE_STATUS);
+
+            let fragment_shader = gl::CreateShader(gl::FRAGMENT_SHADER);
+            let c_str_frag = CString::new(frag_buffer).unwrap();
+            gl::ShaderSource(fragment_shader, 1, &c_str_frag.as_ptr(), ptr::null());
+            gl::CompileShader(fragment_shader);
+            check_for_errors(fragment_shader, gl::COMPILE_STATUS);
+
+            let shader_program = gl::CreateProgram();
+            gl::AttachShader(shader_program, vertex_shader);
+            gl::AttachShader(shader_program, fragment_shader);
+            gl::LinkProgram(shader_program);
+            check_for_errors(shader_program, gl::LINK_STATUS);
+
+            gl::DeleteShader(vertex_shader);
+            gl::DeleteShader(fragment_shader);
+            shader_program
+        };
+        Ok(Shader { id: shader_program })
+    }
+
+    pub unsafe fn use_program(&self) {
+        gl::UseProgram(self.id)
+    }
+
+    pub unsafe fn set_bool(&self, name: &CStr, value: bool) {
+        gl::Uniform1i(gl::GetUniformLocation(self.id, name.as_ptr()), value as i32);
+    }
+
+    pub unsafe fn set_int(&self, name: &CStr, value: i32) {
+        gl::Uniform1i(gl::GetUniformLocation(self.id, name.as_ptr()), value);
+    }
+
+    pub unsafe fn set_float(&self, name: &CStr, value: f32) {
+        gl::Uniform1f(gl::GetUniformLocation(self.id, name.as_ptr()), value);
+    }
+}
+
+fn check_for_errors(item: u32, status_type: u32) {
+    let mut success = gl::FALSE as GLint;
+    let mut info_log: Vec<u8> = Vec::with_capacity(512);
+    unsafe {
+        info_log.set_len(512 - 1); // skip \0 char
+        if status_type == gl::COMPILE_STATUS {
+            gl::GetShaderiv(item, status_type, &mut success);
+            if success != gl::TRUE as GLint {
+                gl::GetShaderInfoLog(
+                    item,
+                    512,
+                    ptr::null_mut(),
+                    info_log.as_mut_ptr() as *mut GLchar,
+                );
+                eprintln!(
+                    "Compilation failed\n{}",
+                    str::from_utf8_unchecked(&info_log)
+                );
+            }
+        } else if status_type == gl::LINK_STATUS {
+            gl::GetProgramiv(item, status_type, &mut success);
+            if success != gl::TRUE as GLint {
+                gl::GetProgramInfoLog(
+                    item,
+                    512,
+                    ptr::null_mut(),
+                    info_log.as_mut_ptr() as *mut GLchar,
+                );
+                eprintln!("Linking failed\n{}", str::from_utf8_unchecked(&info_log));
+            }
+        }
+    }
+}
