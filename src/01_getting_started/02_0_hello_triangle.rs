@@ -1,4 +1,4 @@
-// https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.2.hello_triangle_indexed/hello_triangle_indexed.cpp
+// https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.1.hello_triangle/hello_triangle.cpp
 mod chapter;
 extern crate glfw;
 
@@ -9,8 +9,8 @@ use std::{mem, ptr};
 extern crate gl;
 use gl::types::*;
 
-const VERTEX_SHADER_SOURCE: &[u8] = include_bytes!("03_hello_triangle.vert");
-const FRAGMENT_SHADER_SOURCE: &[u8] = include_bytes!("03_hello_triangle.frag");
+const VERTEX_SHADER_SOURCE: &[u8] = include_bytes!("02_hello_triangle.vert");
+const FRAGMENT_SHADER_SOURCE: &[u8] = include_bytes!("02_hello_triangle.frag");
 
 pub fn main() {
     let (mut ctx, mut window, events) = chapter::init_window();
@@ -38,38 +38,23 @@ pub fn main() {
         gl::DeleteShader(fragment_shader);
 
         #[rustfmt::skip]
-        let vertices: [f32;12] = [
-            0.5,  0.5, 0.0, // top right
-            0.5, -0.5, 0.0, // bottom right
-           -0.5, -0.5, 0.0, // bottom left
-           -0.5,  0.5, 0.0, // top left
-        ];
-        #[rustfmt::skip]
-        let indices: [u32;6] = [
-            0, 1, 3,
-            1, 2, 3
+        let vertices: [f32;9] = [
+           -0.5, -0.5, 0.0,
+            0.5, -0.5, 0.0,
+            0.0,  0.5, 0.0
         ];
 
-        let (mut vbo, mut vao, mut ebo) = (0, 0, 0);
+        let (mut vbo, mut vao) = (0, 0);
         gl::GenVertexArrays(1, &mut vao);
         gl::GenBuffers(1, &mut vbo);
-        gl::GenBuffers(1, &mut ebo);
         {
             gl::BindVertexArray(vao);
-
             gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
+
             gl::BufferData(
                 gl::ARRAY_BUFFER,
                 (vertices.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
                 &vertices[0] as *const f32 as *const c_void,
-                gl::STATIC_DRAW,
-            );
-
-            gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo);
-            gl::BufferData(
-                gl::ELEMENT_ARRAY_BUFFER,
-                (indices.len() * mem::size_of::<GLuint>()) as GLsizeiptr,
-                &indices[0] as *const u32 as *const c_void,
                 gl::STATIC_DRAW,
             );
 
@@ -87,7 +72,6 @@ pub fn main() {
             gl::BindVertexArray(0);
         }
 
-        // gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
         (shader_program, vao)
     };
 
@@ -99,7 +83,7 @@ pub fn main() {
 
             gl::UseProgram(shader_program);
             gl::BindVertexArray(vao);
-            gl::DrawElements(gl::TRIANGLES, 6, gl::UNSIGNED_INT, ptr::null());
+            gl::DrawArrays(gl::TRIANGLES, 0, 3)
         }
         window.swap_buffers();
         ctx.poll_events();

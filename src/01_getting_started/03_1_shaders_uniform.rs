@@ -14,8 +14,8 @@ pub fn main() {
     let (mut ctx, mut window, events) = chapter::init_window();
 
     let shader = Shader::new(
-        "src/01_getting_started/04_0_shaders_uniform.vert",
-        "src/01_getting_started/04_0_shaders_uniform.frag",
+        "src/01_getting_started/03_1_shaders_uniform.vert",
+        "src/01_getting_started/03_1_shaders_uniform.frag",
     )
     .expect("Failed to create shader");
 
