@@ -52,6 +52,7 @@ pub fn process_events(window: &mut glfw::Window, events: &Receiver<(f64, glfw::W
             glfw::WindowEvent::Key(Key::Escape, _, Action::Press, _) => {
                 window.set_should_close(true)
             }
+            glfw::WindowEvent::Key(Key::Q, _, Action::Press, _) => window.set_should_close(true),
             _ => {}
         }
     }
