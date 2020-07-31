@@ -31,3 +31,7 @@ path= "src/01_getting_started/02_1_hello_triangle_indexed.rs"
 [[bin]]
 name="01_03_1_shaders_uniform"
 path= "src/01_getting_started/03_1_shaders_uniform.rs"
+
+[[bin]]
+name="01_03_2_shaders_interpolation"
+path= "src/01_getting_started/03_2_shaders_interpolation.rs"

@@ -33,6 +33,7 @@ pub fn init_window() -> (Glfw, Window, Receiver<(f64, WindowEvent)>) {
             glfw::WindowMode::Windowed,
         )
         .expect("Create Window");
+    window.set_pos(-(SCREEN_WIDTH as i32), 0);
     window.make_current();
     window.set_key_polling(true);
     window.set_framebuffer_size_polling(true);
@@ -92,16 +93,10 @@ pub fn check_for_errors(item: u32, status_type: u32) {
     }
 }
 
-#[allow(dead_code)]
-pub fn create_triangle_vao() -> u32 {
+pub fn create_vertices_vao(vertices: &[f32], el_size: i32) -> u32 {
+    let has_color = el_size >= 6;
+    let stride = el_size * mem::size_of::<GLfloat>() as GLsizei;
     unsafe {
-        #[rustfmt::skip]
-        let vertices: [f32;9] = [
-           -0.5, -0.5, 0.0,
-            0.5, -0.5, 0.0,
-            0.0,  0.5, 0.0
-        ];
-
         let (mut vbo, mut vao) = (0, 0);
         gl::GenVertexArrays(1, &mut vao);
         gl::GenBuffers(1, &mut vbo);
@@ -116,19 +111,34 @@ pub fn create_triangle_vao() -> u32 {
                 gl::STATIC_DRAW,
             );
 
-            gl::VertexAttribPointer(
-                0,
-                3,
-                gl::FLOAT,
-                gl::FALSE,
-                3 * mem::size_of::<GLfloat>() as GLsizei,
-                ptr::null(),
-            );
+            gl::VertexAttribPointer(0, 3, gl::FLOAT, gl::FALSE, stride, ptr::null());
             gl::EnableVertexAttribArray(0);
+            if has_color {
+                gl::VertexAttribPointer(
+                    1,
+                    3,
+                    gl::FLOAT,
+                    gl::FALSE,
+                    stride,
+                    (3 * mem::size_of::<GLfloat>() as GLsizei) as *const c_void,
+                );
+                gl::EnableVertexAttribArray(1);
+            }
 
             gl::BindBuffer(gl::ARRAY_BUFFER, 0);
             gl::BindVertexArray(0);
         }
         vao
     }
+}
+
+#[allow(dead_code)]
+pub fn create_triangle_vao() -> u32 {
+    #[rustfmt::skip]
+    let vertices: [f32;9] = [
+       -0.5, -0.5, 0.0,
+        0.5, -0.5, 0.0,
+        0.0,  0.5, 0.0
+    ];
+    create_vertices_vao(&vertices, 3)
 }
