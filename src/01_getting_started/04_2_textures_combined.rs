@@ -6,6 +6,7 @@ use glfw::Context;
 extern crate gl;
 
 use opengl::shader::Shader;
+use std::ffi::CString;
 use std::ptr;
 
 pub fn create_rectangle_vao() -> u32 {
@@ -29,18 +30,26 @@ pub fn main() {
     let (mut ctx, mut window, events) = chapter::init_window();
 
     let shader = Shader::new(
-        "src/01_getting_started/04_1_textures.vert",
-        "src/01_getting_started/04_1_textures.frag",
+        "src/01_getting_started/04_2_textures_combined.vert",
+        "src/01_getting_started/04_2_textures_combined.frag",
     )
     .expect("Failed to create shader");
 
     let vao = create_rectangle_vao();
 
-    let texture = chapter::load_texture("resources/textures/container.jpg", false, false);
+    let container_texture = chapter::load_texture("resources/textures/container.jpg", false, false);
+    let smiley_texture = chapter::load_texture("resources/textures/awesomeface.png", true, true);
 
     unsafe {
-        gl::BindTexture(gl::TEXTURE_2D, texture);
         shader.use_program();
+
+        shader.set_int(&CString::new("containerTexture").unwrap(), 0);
+        shader.set_int(&CString::new("smileyTexture").unwrap(), 1);
+
+        gl::ActiveTexture(gl::TEXTURE0);
+        gl::BindTexture(gl::TEXTURE_2D, container_texture);
+        gl::ActiveTexture(gl::TEXTURE0 + 1);
+        gl::BindTexture(gl::TEXTURE_2D, smiley_texture);
     }
 
     window.set_focus_on_show(true);

@@ -199,8 +199,9 @@ pub fn create_indexed_vertices_vao(vertices: &[f32], indices: &[u32], el_size: i
 }
 
 #[allow(dead_code)]
-pub fn load_texture(path: &str) -> u32 {
+pub fn load_texture(path: &str, vflip: bool, is_rgba: bool) -> u32 {
     let mut texture = 0;
+    let format = if is_rgba { gl::RGBA } else { gl::RGB };
     unsafe {
         gl::GenTextures(1, &mut texture);
         gl::BindTexture(gl::TEXTURE_2D, texture);
@@ -214,6 +215,8 @@ pub fn load_texture(path: &str) -> u32 {
         gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
 
         let img = image::open(path).expect("Failed to load texture image");
+        let img = if vflip { img.flipv() } else { img };
+
         let texture_data = img.to_bytes();
         gl::TexImage2D(
             gl::TEXTURE_2D,
@@ -222,7 +225,7 @@ pub fn load_texture(path: &str) -> u32 {
             img.width() as i32,
             img.height() as i32,
             0,
-            gl::RGB,
+            format,
             gl::UNSIGNED_BYTE,
             &texture_data[0] as *const u8 as *const c_void,
         );
