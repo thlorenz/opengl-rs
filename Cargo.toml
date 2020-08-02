@@ -55,3 +55,7 @@ path= "src/01_getting_started/04_2_textures_combined.rs"
 [[bin]]
 name="01_05_1_transformations"
 path= "src/01_getting_started/05_1_transformations.rs"
+
+[[bin]]
+name="01_05_1_transformations_ex2"
+path= "src/01_getting_started/05_1_transformations_ex2.rs"
