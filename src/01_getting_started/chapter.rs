@@ -8,6 +8,8 @@ use glfw::{Context, Glfw, Window, WindowEvent};
 extern crate gl;
 use gl::types::*;
 
+extern crate nalgebra_glm as glm;
+
 use std::str;
 use std::{mem, ptr};
 
@@ -421,4 +423,20 @@ pub fn create_box_vao() -> u32 {
         }
         vao
     }
+}
+
+#[allow(dead_code)]
+pub fn cube_positions() -> [glm::TVec3<f32>; 10] {
+    [
+        glm::vec3(0.0, 0.0, 0.0),
+        glm::vec3(2.0, 5.0, -15.0),
+        glm::vec3(-1.5, -2.2, -2.5),
+        glm::vec3(-3.8, -2.0, -12.3),
+        glm::vec3(2.4, -0.4, -3.5),
+        glm::vec3(-1.7, 3.0, -7.5),
+        glm::vec3(1.3, -2.0, -2.5),
+        glm::vec3(1.5, 2.0, -2.5),
+        glm::vec3(1.5, 0.2, -1.5),
+        glm::vec3(-1.3, 1.0, -1.5),
+    ]
 }

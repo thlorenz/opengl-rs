@@ -24,25 +24,14 @@ pub fn main() {
     let container_texture = chapter::load_texture("resources/textures/container.jpg", false, false);
     let smiley_texture = chapter::load_texture("resources/textures/awesomeface.png", false, true);
 
+    let cube_positions = chapter::cube_positions();
+
     let projection = glm::perspective(
         chapter::SCREEN_WIDTH as f32 / chapter::SCREEN_HEIGHT as f32,
         45.0_f32.to_radians(),
         0.1,
         100.0,
     );
-
-    let cube_positions = [
-        glm::vec3(0.0, 0.0, 0.0),
-        glm::vec3(2.0, 5.0, -15.0),
-        glm::vec3(-1.5, -2.2, -2.5),
-        glm::vec3(-3.8, -2.0, -12.3),
-        glm::vec3(2.4, -0.4, -3.5),
-        glm::vec3(-1.7, 3.0, -7.5),
-        glm::vec3(1.3, -2.0, -2.5),
-        glm::vec3(1.5, 2.0, -2.5),
-        glm::vec3(1.5, 0.2, -1.5),
-        glm::vec3(-1.3, 1.0, -1.5),
-    ];
 
     unsafe {
         shader.use_program();
