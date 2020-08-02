@@ -6,6 +6,8 @@ extern crate gl;
 use gl::types::*;
 use std::error::Error;
 
+extern crate nalgebra_glm as glm;
+
 #[allow(dead_code)]
 pub struct Shader {
     pub id: u32,
@@ -56,6 +58,15 @@ impl Shader {
 
     pub unsafe fn set_float(&self, name: &CStr, value: f32) {
         gl::Uniform1f(gl::GetUniformLocation(self.id, name.as_ptr()), value);
+    }
+
+    pub unsafe fn set_mat4(&self, name: &CStr, mat: &glm::Mat4) {
+        gl::UniformMatrix4fv(
+            gl::GetUniformLocation(self.id, name.as_ptr()),
+            1,
+            gl::FALSE,
+            mat.as_ptr(),
+        );
     }
 }
 
