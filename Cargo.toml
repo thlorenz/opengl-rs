@@ -83,3 +83,7 @@ path= "src/01_getting_started/06_3_coordinate_systems_translate.rs"
 [[bin]]
 name="01_07_1_camera_circle"
 path= "src/01_getting_started/07_1_camera_circle.rs"
+
+[[bin]]
+name="01_07_2_camera_keyboard"
+path= "src/01_getting_started/07_2_camera_keyboard.rs"
