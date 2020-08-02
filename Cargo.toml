@@ -10,7 +10,7 @@ edition = "2018"
 gl = "0.14.0"
 glfw = "0.39.1"
 image = "0.23.8"
-
+nalgebra-glm = "0.7.0"
 
 [[bin]]
 name="01_01_hello_window"
