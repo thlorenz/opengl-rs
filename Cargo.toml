@@ -63,3 +63,7 @@ path= "src/01_getting_started/05_1_transformations_ex2.rs"
 [[bin]]
 name="01_06_1_coordinate_systems"
 path= "src/01_getting_started/06_1_coordinate_systems.rs"
+
+[[bin]]
+name="01_06_2_coordinate_systems_depth"
+path= "src/01_getting_started/06_2_coordinate_systems_depth.rs"
