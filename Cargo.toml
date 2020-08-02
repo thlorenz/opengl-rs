@@ -71,3 +71,7 @@ path= "src/01_getting_started/06_2_coordinate_systems_depth.rs"
 [[bin]]
 name="01_06_3_coordinate_systems_multiple"
 path= "src/01_getting_started/06_3_coordinate_systems_multiple.rs"
+
+[[bin]]
+name="01_06_3_coordinate_systems_ex3"
+path= "src/01_getting_started/06_3_coordinate_systems_ex3.rs"
