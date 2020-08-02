@@ -11,23 +11,6 @@ use opengl::shader::Shader;
 use std::ffi::CString;
 use std::ptr;
 
-pub fn create_rectangle_vao() -> u32 {
-    #[rustfmt::skip]
-        let vertices: [f32;20] = [
-        //    positions       texture
-         0.5,  0.5, 0.0,   1.0, 1.0,   // top right
-         0.5, -0.5, 0.0,   1.0, 0.0,   // bottom right
-        -0.5, -0.5, 0.0,   0.0, 0.0,   // bottom left
-        -0.5,  0.5, 0.0,   0.0, 1.0    // top left
-    ];
-    #[rustfmt::skip]
-        let indices = [
-        0, 1, 3,
-        1, 2, 3
-    ];
-    chapter::create_indexed_texture_vertices_vao(&vertices, &indices)
-}
-
 pub fn main() {
     let (mut ctx, mut window, events) = chapter::init_window();
 
@@ -37,7 +20,7 @@ pub fn main() {
     )
     .expect("Failed to create shader");
 
-    let vao = create_rectangle_vao();
+    let vao = chapter::create_rectangle_vao();
 
     let container_texture = chapter::load_texture("resources/textures/container.jpg", false, false);
     let smiley_texture = chapter::load_texture("resources/textures/awesomeface.png", true, true);

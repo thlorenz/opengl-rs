@@ -14,8 +14,8 @@ use std::{mem, ptr};
 use image::GenericImageView;
 use std::ffi::c_void;
 
-const SCREEN_WIDTH: u32 = 800;
-const SCREEN_HEIGHT: u32 = 600;
+pub const SCREEN_WIDTH: u32 = 800;
+pub const SCREEN_HEIGHT: u32 = 600;
 
 #[allow(dead_code)] // this is actually used in lots of places
 pub fn init_window() -> (Glfw, Window, Receiver<(f64, WindowEvent)>) {
@@ -292,4 +292,22 @@ pub fn create_triangle_vao() -> u32 {
         0.0,  0.5, 0.0
     ];
     create_vertices_vao(&vertices, 3)
+}
+
+#[allow(dead_code)]
+pub fn create_rectangle_vao() -> u32 {
+    #[rustfmt::skip]
+        let vertices: [f32;20] = [
+        //    positions       texture
+        0.5,  0.5, 0.0,   1.0, 1.0,   // top right
+        0.5, -0.5, 0.0,   1.0, 0.0,   // bottom right
+       -0.5, -0.5, 0.0,   0.0, 0.0,   // bottom left
+       -0.5,  0.5, 0.0,   0.0, 1.0    // top left
+    ];
+    #[rustfmt::skip]
+        let indices = [
+        0, 1, 3,
+        1, 2, 3
+    ];
+    create_indexed_texture_vertices_vao(&vertices, &indices)
 }
