@@ -9,7 +9,6 @@ extern crate nalgebra_glm as glm;
 
 use opengl::shader::Shader;
 use std::ffi::CString;
-use std::ptr;
 
 pub fn main() {
     let (mut ctx, mut window, events) = chapter::init_window();
@@ -27,8 +26,8 @@ pub fn main() {
 
     let view = glm::translate(&glm::Mat4::identity(), &glm::vec3(0.0, 0.0, -3.0));
     let projection = glm::perspective(
+        chapter::SCREEN_WIDTH as f32 / chapter::SCREEN_HEIGHT as f32,
         45.0_f32.to_radians(),
-        (chapter::SCREEN_WIDTH / chapter::SCREEN_HEIGHT) as f32,
         0.1,
         100.0,
     );
@@ -46,6 +45,8 @@ pub fn main() {
 
         shader.set_mat4(&CString::new("view").unwrap(), &view);
         shader.set_mat4(&CString::new("projection").unwrap(), &projection);
+
+        gl::Enable(gl::DEPTH_TEST);
     }
 
     window.set_focus_on_show(true);
@@ -53,13 +54,13 @@ pub fn main() {
         chapter::process_events(&mut window, &events);
         unsafe {
             gl::ClearColor(0.2, 0.3, 0.3, 1.0);
-            gl::Clear(gl::COLOR_BUFFER_BIT);
+            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
             let time = ctx.get_time() as f32;
             let model = glm::rotate(
                 &glm::Mat4::identity(),
-                (time * 100.0).to_radians(),
-                &glm::vec3(0.5, 1.0, 0.0),
+                (time * 50.0).to_radians(),
+                &glm::vec3(0.5, 1.0, 0.0).normalize(),
             );
             shader.set_mat4(&CString::new("model").unwrap(), &model);
 

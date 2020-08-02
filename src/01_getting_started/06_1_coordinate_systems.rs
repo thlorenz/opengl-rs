@@ -31,9 +31,10 @@ pub fn main() {
         &glm::vec3(1.0, 0.0, 0.0),
     );
     let view = glm::translate(&glm::Mat4::identity(), &glm::vec3(0.0, 0.0, -3.0));
+    // NOTE: arg order is different than the C++ counterpart: (aspect: N, fovy: N, near: N, far: N)
     let projection = glm::perspective(
+        chapter::SCREEN_WIDTH as f32 / chapter::SCREEN_HEIGHT as f32,
         45.0_f32.to_radians(),
-        (chapter::SCREEN_WIDTH / chapter::SCREEN_HEIGHT) as f32,
         0.1,
         100.0,
     );
