@@ -45,7 +45,11 @@ pub fn init_window() -> (Glfw, Window, Receiver<(f64, WindowEvent)>) {
     (ctx, window, events)
 }
 
-pub fn process_events(window: &mut glfw::Window, events: &Receiver<(f64, glfw::WindowEvent)>) {
+pub fn process_events(
+    window: &mut glfw::Window,
+    events: &Receiver<(f64, glfw::WindowEvent)>,
+) -> (bool, bool, bool, bool, bool, bool) {
+    let (mut w, mut a, mut s, mut d, mut q, mut e) = (false, false, false, false, false, false);
     for (_, event) in glfw::flush_messages(events) {
         match event {
             glfw::WindowEvent::FramebufferSize(width, height) => unsafe {
@@ -54,10 +58,28 @@ pub fn process_events(window: &mut glfw::Window, events: &Receiver<(f64, glfw::W
             glfw::WindowEvent::Key(Key::Escape, _, Action::Press, _) => {
                 window.set_should_close(true)
             }
-            glfw::WindowEvent::Key(Key::Q, _, Action::Press, _) => window.set_should_close(true),
+            glfw::WindowEvent::Key(Key::W, _, _, _) => {
+                w = true;
+            }
+            glfw::WindowEvent::Key(Key::A, _, _, _) => {
+                a = true;
+            }
+            glfw::WindowEvent::Key(Key::S, _, _, _) => {
+                s = true;
+            }
+            glfw::WindowEvent::Key(Key::D, _, _, _) => {
+                d = true;
+            }
+            glfw::WindowEvent::Key(Key::Q, _, _, _) => {
+                q = true;
+            }
+            glfw::WindowEvent::Key(Key::E, _, _, _) => {
+                e = true;
+            }
             _ => {}
         }
     }
+    (w, a, s, d, q, e)
 }
 
 #[allow(dead_code)] // this is actually used in lots of places
