@@ -6,8 +6,8 @@ extern crate gl;
 extern crate nalgebra_glm as glm;
 
 use glfw::Context;
-use opengl::common;
 use opengl::shader::Shader;
+use opengl::{common, util};
 use std::ffi::CString;
 
 pub fn main() {
@@ -21,8 +21,8 @@ pub fn main() {
 
     let vao = chapter::create_box_vao();
 
-    let container_texture = chapter::load_texture("resources/textures/container.jpg", false, false);
-    let smiley_texture = chapter::load_texture("resources/textures/awesomeface.png", false, true);
+    let container_texture = util::load_texture("resources/textures/container.jpg", false);
+    let smiley_texture = util::load_texture("resources/textures/awesomeface.png", true);
 
     let cube_positions = chapter::cube_positions();
 
