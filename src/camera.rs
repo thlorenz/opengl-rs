@@ -35,7 +35,7 @@ impl Default for Camera {
             world_up: glm::vec3(0.0, 1.0, 0.0),
             yaw: -90.0,
             pitch: 0.0,
-            mov_speed: 2.5,
+            mov_speed: 5.0,
             mouse_sensitivity: 0.1,
             zoom: 45.0,
         };

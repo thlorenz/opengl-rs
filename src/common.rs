@@ -1,6 +1,6 @@
 extern crate glfw;
 
-use self::glfw::{Action, Context, Key};
+use self::glfw::{Action, Context, Cursor, Key};
 use crate::camera::{Camera, CameraMovement};
 use std::sync::mpsc::Receiver;
 
@@ -8,18 +8,13 @@ pub const SCREEN_WIDTH: u32 = 800;
 pub const SCREEN_HEIGHT: u32 = 600;
 
 pub struct Mouse {
-    pub seen: bool,
     pub x: f32,
     pub y: f32,
 }
 
 impl Default for Mouse {
     fn default() -> Self {
-        Mouse {
-            seen: false,
-            x: 0.0,
-            y: 0.0,
-        }
+        Mouse { x: 0.0, y: 0.0 }
     }
 }
 
@@ -57,7 +52,8 @@ impl Default for Scene {
         window.set_key_polling(true);
         window.set_cursor_pos_polling(true);
         window.set_scroll_polling(true);
-        window.set_cursor_mode(glfw::CursorMode::Disabled);
+        window.set_cursor_mode(glfw::CursorMode::Normal);
+        window.set_cursor(Some(Cursor::standard(glfw::StandardCursor::Crosshair)));
 
         gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 
@@ -86,18 +82,14 @@ impl Scene {
                 },
                 glfw::WindowEvent::CursorPos(x, y) => {
                     let (x, y) = (x as f32, y as f32);
-                    if !self.mouse.seen {
-                        self.mouse.x = x;
-                        self.mouse.y = y;
-                        self.mouse.seen = true;
-                    }
 
-                    let dx = x - self.mouse.x;
-                    let dy = y - self.mouse.y;
+                    if self.window.get_mouse_button(glfw::MouseButtonLeft) == Action::Press {
+                        let dx = x - self.mouse.x;
+                        let dy = y - self.mouse.y;
+                        self.camera.process_mouse_move(dx, dy, true);
+                    }
                     self.mouse.x = x;
                     self.mouse.y = y;
-
-                    self.camera.process_mouse_move(dx, dy, true);
                 }
                 glfw::WindowEvent::Scroll(_, dy) => {
                     self.camera.process_mouse_scroll(dy as f32);
