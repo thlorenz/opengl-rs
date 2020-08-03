@@ -87,3 +87,7 @@ path= "src/01_getting_started/07_1_camera_circle.rs"
 [[bin]]
 name="01_07_2_camera_keyboard"
 path= "src/01_getting_started/07_2_camera_keyboard.rs"
+
+[[bin]]
+name="01_07_4_camera_class"
+path= "src/01_getting_started/07_4_camera_class.rs"
