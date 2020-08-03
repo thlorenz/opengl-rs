@@ -7,11 +7,11 @@ extern crate nalgebra_glm as glm;
 
 use glfw::Context;
 use opengl::shader::Shader;
-use opengl::{common, util};
+use opengl::{scene, util};
 use std::ffi::CString;
 
 pub fn main() {
-    let mut scene = common::Scene::default();
+    let mut scene = scene::Scene::default();
 
     let shader = Shader::new(
         "src/01_getting_started/06_coordinate_systems.vert",
@@ -56,12 +56,9 @@ pub fn main() {
             let view = scene.camera.get_view();
             shader.set_mat4(&CString::new("view").unwrap(), &view);
 
-            let projection = glm::perspective(
-                common::SCREEN_WIDTH as f32 / common::SCREEN_HEIGHT as f32,
-                scene.camera.zoom.to_radians(),
-                0.1,
-                100.0,
-            );
+            let projection =
+                glm::perspective(scene.ratio(), scene.camera.zoom.to_radians(), 0.1, 100.0);
+
             shader.set_mat4(&CString::new("projection").unwrap(), &projection);
 
             gl::BindVertexArray(vao);

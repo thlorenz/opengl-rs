@@ -24,6 +24,9 @@ pub struct Scene {
     pub camera: Camera,
     mouse: Mouse,
     events: Receiver<(f64, glfw::WindowEvent)>,
+    width: u32,
+    height: u32,
+    ratio: f32,
 }
 
 impl Default for Scene {
@@ -37,13 +40,9 @@ impl Default for Scene {
         #[cfg(target_os = "macos")]
         ctx.window_hint(glfw::WindowHint::OpenGlForwardCompat(true));
 
+        let (width, height) = (SCREEN_WIDTH, SCREEN_HEIGHT);
         let (mut window, events) = ctx
-            .create_window(
-                SCREEN_WIDTH,
-                SCREEN_HEIGHT,
-                "Learn OpenGL",
-                glfw::WindowMode::Windowed,
-            )
+            .create_window(width, height, "Learn OpenGL", glfw::WindowMode::Windowed)
             .expect("Create Window");
         window.set_pos(0, 0);
         window.set_focus_on_show(true);
@@ -59,12 +58,16 @@ impl Default for Scene {
 
         let mouse = Mouse::default();
         let camera = Camera::default();
+        let ratio = width as f32 / height as f32;
         Scene {
             ctx,
             window,
             camera,
             mouse,
             events,
+            width,
+            height,
+            ratio,
         }
     }
 }
@@ -115,5 +118,17 @@ impl Scene {
         if self.window.get_key(Key::Escape) == Action::Press {
             self.window.set_should_close(true);
         }
+    }
+
+    pub fn width(&self) -> u32 {
+        self.width
+    }
+
+    pub fn height(&self) -> u32 {
+        self.height
+    }
+
+    pub fn ratio(&self) -> f32 {
+        self.ratio
     }
 }
