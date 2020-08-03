@@ -72,9 +72,9 @@ impl Shader {
 
 fn check_for_errors(item: u32, status_type: u32) {
     let mut success = gl::FALSE as GLint;
-    let mut info_log: Vec<u8> = Vec::with_capacity(512);
+    let mut info_log: Vec<u8> = vec![0; 512];
     unsafe {
-        info_log.set_len(512 - 1); // skip \0 char
+        info_log.set_len(512);
         if status_type == gl::COMPILE_STATUS {
             gl::GetShaderiv(item, status_type, &mut success);
             if success != gl::TRUE as GLint {
@@ -84,10 +84,7 @@ fn check_for_errors(item: u32, status_type: u32) {
                     ptr::null_mut(),
                     info_log.as_mut_ptr() as *mut GLchar,
                 );
-                eprintln!(
-                    "Compilation failed\n{}",
-                    str::from_utf8_unchecked(&info_log)
-                );
+                eprintln!("Compilation failed\n{}", str::from_utf8(&info_log).unwrap());
             }
         } else if status_type == gl::LINK_STATUS {
             gl::GetProgramiv(item, status_type, &mut success);
@@ -98,7 +95,7 @@ fn check_for_errors(item: u32, status_type: u32) {
                     ptr::null_mut(),
                     info_log.as_mut_ptr() as *mut GLchar,
                 );
-                eprintln!("Linking failed\n{}", str::from_utf8_unchecked(&info_log));
+                eprintln!("Linking failed\n{}", str::from_utf8(&info_log).unwrap());
             }
         }
     }
