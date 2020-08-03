@@ -1,4 +1,5 @@
 pub mod camera;
+pub mod macros;
 pub mod scene;
 pub mod shader;
 mod tests;

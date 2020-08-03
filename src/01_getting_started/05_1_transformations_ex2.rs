@@ -7,8 +7,9 @@ extern crate gl;
 
 extern crate nalgebra_glm as glm;
 
+use opengl::c_str;
 use opengl::shader::Shader;
-use std::ffi::CString;
+use std::ffi::CStr;
 use std::ptr;
 
 pub fn main() {
@@ -25,16 +26,14 @@ pub fn main() {
     let container_texture = chapter::load_texture("resources/textures/container.jpg", false, false);
     let smiley_texture = chapter::load_texture("resources/textures/awesomeface.png", true, true);
 
-    let transform_field = CString::new("transform").unwrap();
-
     let translation_1 = glm::translate(&glm::Mat4::identity(), &glm::vec3(-0.5, 0.5, 0.0));
     let translation_2 = glm::translate(&glm::Mat4::identity(), &glm::vec3(0.5, -0.5, 0.0));
 
     unsafe {
         shader.use_program();
 
-        shader.set_int(&CString::new("containerTexture").unwrap(), 0);
-        shader.set_int(&CString::new("smileyTexture").unwrap(), 1);
+        shader.set_int(c_str!("containerTexture"), 0);
+        shader.set_int(c_str!("smileyTexture"), 1);
 
         gl::ActiveTexture(gl::TEXTURE0);
         gl::BindTexture(gl::TEXTURE_2D, container_texture);
@@ -52,7 +51,7 @@ pub fn main() {
             let time = ctx.get_time() as f32;
             let vec_scale = glm::sin(&glm::vec3(time, time, 0.0));
             let scale = glm::scale(&translation_1, &vec_scale);
-            shader.set_mat4(&transform_field, &scale);
+            shader.set_mat4(c_str!("transform"), &scale);
             gl::DrawElements(gl::TRIANGLES, 6, gl::UNSIGNED_INT, ptr::null());
 
             let rotation = glm::rotate(
@@ -60,7 +59,7 @@ pub fn main() {
                 (time * 10.0).to_radians(),
                 &glm::vec3(0.0, 0.0, 1.0),
             );
-            shader.set_mat4(&transform_field, &rotation);
+            shader.set_mat4(c_str!("transform"), &rotation);
             gl::DrawElements(gl::TRIANGLES, 6, gl::UNSIGNED_INT, ptr::null());
         }
         window.swap_buffers();

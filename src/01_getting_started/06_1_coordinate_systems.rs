@@ -7,8 +7,9 @@ extern crate gl;
 
 extern crate nalgebra_glm as glm;
 
+use opengl::c_str;
 use opengl::shader::Shader;
-use std::ffi::CString;
+use std::ffi::CStr;
 use std::ptr;
 
 pub fn main() {
@@ -42,17 +43,17 @@ pub fn main() {
     unsafe {
         shader.use_program();
 
-        shader.set_int(&CString::new("containerTexture").unwrap(), 0);
-        shader.set_int(&CString::new("smileyTexture").unwrap(), 1);
+        shader.set_int(c_str!("containerTexture"), 0);
+        shader.set_int(c_str!("smileyTexture"), 1);
 
         gl::ActiveTexture(gl::TEXTURE0);
         gl::BindTexture(gl::TEXTURE_2D, container_texture);
         gl::ActiveTexture(gl::TEXTURE0 + 1);
         gl::BindTexture(gl::TEXTURE_2D, smiley_texture);
 
-        shader.set_mat4(&CString::new("model").unwrap(), &model);
-        shader.set_mat4(&CString::new("view").unwrap(), &view);
-        shader.set_mat4(&CString::new("projection").unwrap(), &projection);
+        shader.set_mat4(c_str!("model"), &model);
+        shader.set_mat4(c_str!("view"), &view);
+        shader.set_mat4(c_str!("projection"), &projection);
     }
 
     window.set_focus_on_show(true);

@@ -6,9 +6,10 @@ extern crate gl;
 extern crate nalgebra_glm as glm;
 
 use glfw::Context;
+use opengl::c_str;
 use opengl::shader::Shader;
 use opengl::{scene, util};
-use std::ffi::CString;
+use std::ffi::CStr;
 
 pub fn main() {
     let mut scene = scene::Scene::default();
@@ -29,8 +30,8 @@ pub fn main() {
     unsafe {
         shader.use_program();
 
-        shader.set_int(&CString::new("containerTexture").unwrap(), 0);
-        shader.set_int(&CString::new("smileyTexture").unwrap(), 1);
+        shader.set_int(c_str!("containerTexture"), 0);
+        shader.set_int(c_str!("smileyTexture"), 1);
 
         gl::ActiveTexture(gl::TEXTURE0);
         gl::BindTexture(gl::TEXTURE_2D, container_texture);
@@ -54,12 +55,12 @@ pub fn main() {
             scene.process_input(dt);
 
             let view = scene.camera.get_view();
-            shader.set_mat4(&CString::new("view").unwrap(), &view);
+            shader.set_mat4(c_str!("view"), &view);
 
             let projection =
                 glm::perspective(scene.ratio(), scene.camera.zoom.to_radians(), 0.1, 100.0);
 
-            shader.set_mat4(&CString::new("projection").unwrap(), &projection);
+            shader.set_mat4(c_str!("projection"), &projection);
 
             gl::BindVertexArray(vao);
             for i in 0..cube_positions.len() {
@@ -70,7 +71,7 @@ pub fn main() {
                     (20.0 * (i as f32 + 1.0) * time as f32).to_radians(),
                     &glm::vec3(1.0, 0.3, 0.5).normalize(),
                 );
-                shader.set_mat4(&CString::new("model").unwrap(), &model);
+                shader.set_mat4(c_str!("model"), &model);
                 gl::DrawArrays(gl::TRIANGLES, 0, 36);
             }
         }

@@ -5,8 +5,9 @@ use glfw::Context;
 
 extern crate gl;
 
+use opengl::c_str;
 use opengl::shader::Shader;
-use std::ffi::CString;
+use std::ffi::CStr;
 use std::ptr;
 
 pub fn create_rectangle_vao() -> u32 {
@@ -43,8 +44,8 @@ pub fn main() {
     unsafe {
         shader.use_program();
 
-        shader.set_int(&CString::new("containerTexture").unwrap(), 0);
-        shader.set_int(&CString::new("smileyTexture").unwrap(), 1);
+        shader.set_int(c_str!("containerTexture"), 0);
+        shader.set_int(c_str!("smileyTexture"), 1);
 
         gl::ActiveTexture(gl::TEXTURE0);
         gl::BindTexture(gl::TEXTURE_2D, container_texture);

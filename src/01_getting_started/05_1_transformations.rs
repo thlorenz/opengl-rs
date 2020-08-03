@@ -7,8 +7,9 @@ extern crate gl;
 
 extern crate nalgebra_glm as glm;
 
+use opengl::c_str;
 use opengl::shader::Shader;
-use std::ffi::CString;
+use std::ffi::CStr;
 use std::ptr;
 
 pub fn main() {
@@ -30,8 +31,8 @@ pub fn main() {
     unsafe {
         shader.use_program();
 
-        shader.set_int(&CString::new("containerTexture").unwrap(), 0);
-        shader.set_int(&CString::new("smileyTexture").unwrap(), 1);
+        shader.set_int(c_str!("containerTexture"), 0);
+        shader.set_int(c_str!("smileyTexture"), 1);
 
         gl::ActiveTexture(gl::TEXTURE0);
         gl::BindTexture(gl::TEXTURE_2D, container_texture);
@@ -51,7 +52,7 @@ pub fn main() {
                 (time * 10.0).to_radians(),
                 &glm::vec3(0.0, 0.0, 1.0),
             );
-            shader.set_mat4(&CString::new("transform").unwrap(), &rotation);
+            shader.set_mat4(c_str!("transform"), &rotation);
 
             gl::BindVertexArray(vao);
             gl::DrawElements(gl::TRIANGLES, 6, gl::UNSIGNED_INT, ptr::null());
