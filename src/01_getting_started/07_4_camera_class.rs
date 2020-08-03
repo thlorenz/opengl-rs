@@ -1,18 +1,17 @@
 mod chapter;
 extern crate glfw;
 
-use glfw::Context;
-
 extern crate gl;
 
 extern crate nalgebra_glm as glm;
 
+use glfw::Context;
 use opengl::common;
 use opengl::shader::Shader;
 use std::ffi::CString;
 
 pub fn main() {
-    let (mut ctx, mut window, events, mut mouse, mut camera) = common::init();
+    let mut scene = common::Scene::default();
 
     let shader = Shader::new(
         "src/01_getting_started/06_coordinate_systems.vert",
@@ -41,25 +40,25 @@ pub fn main() {
         gl::Enable(gl::DEPTH_TEST);
     }
 
-    let mut ts = ctx.get_time();
-    while !window.should_close() {
+    let mut ts = scene.ctx.get_time();
+    while !scene.window.should_close() {
         unsafe {
             gl::ClearColor(0.2, 0.3, 0.3, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
-            let time = ctx.get_time();
+            let time = scene.ctx.get_time();
             let dt = (time - ts) as f32;
             ts = time;
 
-            common::process_events(&events, &mut mouse, &mut camera);
-            common::process_input(dt, &mut window, &mut camera);
+            scene.process_events();
+            scene.process_input(dt);
 
-            let view = camera.get_view();
+            let view = scene.camera.get_view();
             shader.set_mat4(&CString::new("view").unwrap(), &view);
 
             let projection = glm::perspective(
                 common::SCREEN_WIDTH as f32 / common::SCREEN_HEIGHT as f32,
-                camera.zoom.to_radians(),
+                scene.camera.zoom.to_radians(),
                 0.1,
                 100.0,
             );
@@ -78,7 +77,7 @@ pub fn main() {
                 gl::DrawArrays(gl::TRIANGLES, 0, 36);
             }
         }
-        window.swap_buffers();
-        ctx.poll_events();
+        scene.window.swap_buffers();
+        scene.ctx.poll_events();
     }
 }
