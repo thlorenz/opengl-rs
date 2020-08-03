@@ -19,7 +19,7 @@ use std::ffi::c_void;
 pub const SCREEN_WIDTH: u32 = 800;
 pub const SCREEN_HEIGHT: u32 = 600;
 
-#[allow(dead_code)] // this is actually used in lots of places
+#[allow(dead_code)]
 pub fn init_window() -> (Glfw, Window, Receiver<(f64, WindowEvent)>) {
     let mut ctx = glfw::init(glfw::FAIL_ON_ERRORS.clone()).unwrap();
     ctx.window_hint(glfw::WindowHint::ContextVersion(3, 3));
@@ -47,6 +47,7 @@ pub fn init_window() -> (Glfw, Window, Receiver<(f64, WindowEvent)>) {
     (ctx, window, events)
 }
 
+#[allow(dead_code)]
 pub fn process_events(
     window: &mut glfw::Window,
     events: &Receiver<(f64, glfw::WindowEvent)>,
