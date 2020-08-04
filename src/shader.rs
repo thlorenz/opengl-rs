@@ -68,6 +68,14 @@ impl Shader {
             mat.as_ptr(),
         );
     }
+
+    pub unsafe fn set_vec3(&self, name: &CStr, vec: &glm::Vec3) {
+        gl::Uniform3fv(
+            gl::GetUniformLocation(self.id, name.as_ptr()),
+            1,
+            vec.as_ptr(),
+        );
+    }
 }
 
 fn check_for_errors(item: u32, status_type: u32) {
