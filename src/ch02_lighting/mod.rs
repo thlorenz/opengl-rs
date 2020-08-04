@@ -4,7 +4,7 @@ use gl::types::*;
 use std::ffi::c_void;
 use std::{mem, ptr};
 
-pub fn create_box_with_normal_vao() -> u32 {
+pub fn create_cube_with_normals_and_lamp_vaos() -> (u32, u32) {
     const NPOS: usize = 3;
     const NNORM: usize = 3;
     const NROWS: usize = 6;
@@ -57,13 +57,13 @@ pub fn create_box_with_normal_vao() -> u32 {
     ];
 
     unsafe {
-        let (mut vbo, mut vao) = (0, 0);
-        gl::GenVertexArrays(1, &mut vao);
+        let (mut vbo, mut cube_vao, mut lamp_vao) = (0, 0, 0);
         gl::GenBuffers(1, &mut vbo);
+        gl::GenVertexArrays(1, &mut cube_vao);
+        gl::GenVertexArrays(1, &mut lamp_vao);
         {
-            gl::BindVertexArray(vao);
+            // load vertices into vbo
             gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
-
             gl::BufferData(
                 gl::ARRAY_BUFFER,
                 (vertices.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
@@ -71,10 +71,12 @@ pub fn create_box_with_normal_vao() -> u32 {
                 gl::STATIC_DRAW,
             );
 
+            // cube vao
+            gl::BindVertexArray(cube_vao);
             gl::VertexAttribPointer(0, NPOS as i32, gl::FLOAT, gl::FALSE, stride, ptr::null());
             gl::EnableVertexAttribArray(0);
 
-            // normal
+            // normal attrib
             gl::VertexAttribPointer(
                 1,
                 NNORM as i32,
@@ -85,10 +87,15 @@ pub fn create_box_with_normal_vao() -> u32 {
             );
             gl::EnableVertexAttribArray(1);
 
+            // lamp vao
+            gl::BindVertexArray(lamp_vao);
+            gl::VertexAttribPointer(0, NPOS as i32, gl::FLOAT, gl::FALSE, stride, ptr::null());
+            gl::EnableVertexAttribArray(0);
+
             gl::BindBuffer(gl::ARRAY_BUFFER, 0);
             gl::BindVertexArray(0);
         }
-        vao
+        (cube_vao, lamp_vao)
     }
 }
 pub fn create_box_vao() -> u32 {

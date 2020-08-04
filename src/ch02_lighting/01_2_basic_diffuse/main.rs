@@ -3,7 +3,7 @@ extern crate nalgebra_glm as glm;
 use glfw::Context;
 use opengl::c_str;
 use opengl::camera::Camera;
-use opengl::ch02_lighting::{create_box_vao, create_box_with_normal_vao};
+use opengl::ch02_lighting::create_cube_with_normals_and_lamp_vaos;
 use opengl::scene;
 use opengl::shader::Shader;
 use std::ffi::CStr;
@@ -30,8 +30,7 @@ fn main() {
     )
     .expect("Failed to create light cube shader");
 
-    let cube_vao = create_box_with_normal_vao();
-    let lamp_vao = create_box_vao();
+    let (cube_vao, lamp_vao) = create_cube_with_normals_and_lamp_vaos();
 
     let light_pos = glm::vec3(1.2, 1.0, 2.0);
 
