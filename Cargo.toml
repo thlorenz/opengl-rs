@@ -95,3 +95,7 @@ path= "src/01_getting_started/07_4_camera_class.rs"
 [[bin]]
 name="ch02_01_1_colors"
 path= "src/ch02_lighting/01_1_colors/main.rs"
+
+[[bin]]
+name="ch02_01_2_basic_diffuse"
+path= "src/ch02_lighting/01_2_basic_diffuse/main.rs"
