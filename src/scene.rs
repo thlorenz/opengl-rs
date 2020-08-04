@@ -27,6 +27,8 @@ pub struct Scene {
     width: u32,
     height: u32,
     ratio: f32,
+    last_frame_ts: f64,
+    dt: f32,
 }
 
 impl Default for Scene {
@@ -59,6 +61,9 @@ impl Default for Scene {
         let mouse = Mouse::default();
         let camera = Camera::default();
         let ratio = width as f32 / height as f32;
+
+        let last_frame_ts = ctx.get_time();
+
         Scene {
             ctx,
             window,
@@ -68,6 +73,8 @@ impl Default for Scene {
             width,
             height,
             ratio,
+            last_frame_ts,
+            dt: 0.0,
         }
     }
 }
@@ -77,7 +84,19 @@ impl Scene {
         self.window.set_pos(-(SCREEN_WIDTH as i32), 0);
     }
 
-    pub fn process_events(&mut self) {
+    pub fn update_camera(&mut self) {
+        let time = self.ctx.get_time();
+        let dt = (time - self.last_frame_ts) as f32;
+
+        self.process_events();
+        self.process_input(dt);
+        self.show_camera_info();
+
+        self.last_frame_ts = time;
+        self.dt = dt;
+    }
+
+    fn process_events(&mut self) {
         for (_, event) in glfw::flush_messages(&self.events) {
             match event {
                 glfw::WindowEvent::FramebufferSize(width, height) => unsafe {
@@ -102,7 +121,7 @@ impl Scene {
         }
     }
 
-    pub fn process_input(&mut self, dt: f32) {
+    fn process_input(&mut self, dt: f32) {
         if self.window.get_key(Key::W) == Action::Press {
             self.camera.process_keyboard(CameraMovement::Forward, dt);
         }
@@ -120,6 +139,13 @@ impl Scene {
         }
     }
 
+    fn show_camera_info(&mut self) {
+        self.window.set_title(&format!(
+            "Camera: [{:?} pitch: {}, yaw: {}]",
+            self.camera.position, self.camera.pitch, self.camera.yaw
+        ));
+    }
+
     pub fn width(&self) -> u32 {
         self.width
     }
@@ -130,5 +156,9 @@ impl Scene {
 
     pub fn ratio(&self) -> f32 {
         self.ratio
+    }
+
+    pub fn dt(&self) -> f32 {
+        self.dt
     }
 }

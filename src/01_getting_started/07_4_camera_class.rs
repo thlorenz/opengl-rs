@@ -41,18 +41,12 @@ pub fn main() {
         gl::Enable(gl::DEPTH_TEST);
     }
 
-    let mut ts = scene.ctx.get_time();
     while !scene.window.should_close() {
         unsafe {
             gl::ClearColor(0.2, 0.3, 0.3, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
-            let time = scene.ctx.get_time();
-            let dt = (time - ts) as f32;
-            ts = time;
-
-            scene.process_events();
-            scene.process_input(dt);
+            scene.update_camera();
 
             let view = scene.camera.get_view();
             shader.set_mat4(c_str!("view"), &view);
@@ -68,7 +62,7 @@ pub fn main() {
                 let translated = glm::translate(&glm::Mat4::identity(), &pos);
                 let model = glm::rotate(
                     &translated,
-                    (20.0 * (i as f32 + 1.0) * time as f32).to_radians(),
+                    (20.0 * (i as f32 + 1.0) * scene.dt()).to_radians(),
                     &glm::vec3(1.0, 0.3, 0.5).normalize(),
                 );
                 shader.set_mat4(c_str!("model"), &model);
