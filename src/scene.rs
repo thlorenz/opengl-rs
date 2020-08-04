@@ -29,6 +29,7 @@ pub struct Scene {
     ratio: f32,
     last_frame_ts: f64,
     dt: f32,
+    time_to_info: f32,
 }
 
 impl Default for Scene {
@@ -75,6 +76,7 @@ impl Default for Scene {
             ratio,
             last_frame_ts,
             dt: 0.0,
+            time_to_info: 0.0,
         }
     }
 }
@@ -90,7 +92,7 @@ impl Scene {
 
         self.process_events();
         self.process_input(dt);
-        self.show_camera_info();
+        self.show_info(dt);
 
         self.last_frame_ts = time;
         self.dt = dt;
@@ -139,11 +141,21 @@ impl Scene {
         }
     }
 
-    fn show_camera_info(&mut self) {
-        self.window.set_title(&format!(
-            "Camera: [{:?} pitch: {}, yaw: {}]",
-            self.camera.position, self.camera.pitch, self.camera.yaw
-        ));
+    fn show_info(&mut self, dt: f32) {
+        self.time_to_info -= dt;
+        if self.time_to_info <= 0.0 {
+            self.window.set_title(&format!(
+                "({:.2}:{:.2}:{:.2}) pitch: {:.2} yaw: {:.2} FPS: {:.0}",
+                self.camera.position.x,
+                self.camera.position.y,
+                self.camera.position.z,
+                self.camera.pitch,
+                self.camera.yaw,
+                (1.0 / dt).round()
+            ));
+            // show info 5 times a second
+            self.time_to_info = 1.0 / 5.0;
+        }
     }
 
     pub fn width(&self) -> u32 {
