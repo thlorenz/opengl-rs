@@ -32,6 +32,8 @@ fn main() {
 
     let (cube_vao, lamp_vao) = create_cube_with_normals_and_lamp_vaos();
 
+    let model = glm::translate(&glm::Mat4::identity(), &glm::vec3(1.0, -0.5, 0.0));
+
     unsafe {
         gl::Enable(gl::DEPTH_TEST);
     }
@@ -43,6 +45,12 @@ fn main() {
         let x: f32 = 1.0 + time.sin() * 2.0;
         let y: f32 = (time / 2.0).sin();
         let light_pos = glm::vec3(x, y, 2.0);
+
+        let model = glm::rotate(
+            &model,
+            (time * 20.0).to_radians(),
+            &glm::vec3(0.0, 1.0, 0.0),
+        );
 
         unsafe {
             gl::ClearColor(0.1, 0.1, 0.1, 1.0);
@@ -60,7 +68,7 @@ fn main() {
 
             cube_shader.set_mat4(c_str!("projection"), &projection);
             cube_shader.set_mat4(c_str!("view"), &view);
-            cube_shader.set_mat4(c_str!("model"), &glm::Mat4::identity());
+            cube_shader.set_mat4(c_str!("model"), &model);
             cube_shader.set_vec3(c_str!("camera"), &scene.camera.position);
 
             gl::BindVertexArray(cube_vao);
