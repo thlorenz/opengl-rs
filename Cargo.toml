@@ -107,3 +107,7 @@ path= "src/ch02_lighting/02_2_basic_specular/main.rs"
 [[bin]]
 name="ch02_02_basic_ex1"
 path= "src/ch02_lighting/02_basic_ex1/main.rs"
+
+[[bin]]
+name="ch02_02_basic_ex2"
+path= "src/ch02_lighting/02_basic_ex2/main.rs"
