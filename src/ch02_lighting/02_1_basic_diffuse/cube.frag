@@ -13,8 +13,12 @@ float ambientStrength = 0.1;
 
 void main() {
     vec3 norm = normalize(Normal);
+
+    // direction vector between light source and fragment's position
     vec3 lightDir = normalize(lightPos - FragPos);
 
+    // diffuse impact the light has on current fragment
+    // diff is the angle between the light and the fragment normal
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;
 

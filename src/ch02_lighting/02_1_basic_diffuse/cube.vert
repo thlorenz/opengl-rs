@@ -12,6 +12,13 @@ out vec3 FragPos;
 
 void main() {
   gl_Position = projection * view * model * vec4(pos, 1.0);
+
+  // fragment world coords
   FragPos = vec3(model * vec4(pos, 1.0));
-  Normal = mat3(transpose(inverse(model))) * normal;
+
+  // cheap version which works fine as long as only uniform scaling occurs
+  Normal = normal;
+
+  // alternative using normal 3x3 matrix created by transposing inverse model (inverse is expensive)
+  // Normal = mat3(transpose(inverse(model))) * normal;
 }

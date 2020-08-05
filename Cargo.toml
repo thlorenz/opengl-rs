@@ -97,5 +97,5 @@ name="ch02_01_1_colors"
 path= "src/ch02_lighting/01_1_colors/main.rs"
 
 [[bin]]
-name="ch02_01_2_basic_diffuse"
-path= "src/ch02_lighting/01_2_basic_diffuse/main.rs"
+name="ch02_02_1_basic_diffuse"
+path= "src/ch02_lighting/02_1_basic_diffuse/main.rs"

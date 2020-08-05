@@ -20,13 +20,13 @@ fn main() {
     scene.move_window_to_left_monitor();
 
     let cube_shader = Shader::new(
-        "src/ch02_lighting/01_2_basic_diffuse/cube.vert",
-        "src/ch02_lighting/01_2_basic_diffuse/cube.frag",
+        "src/ch02_lighting/02_1_basic_diffuse/cube.vert",
+        "src/ch02_lighting/02_1_basic_diffuse/cube.frag",
     )
     .expect("Failed to create lighting shader");
     let lamp_shader = Shader::new(
-        "src/ch02_lighting/01_2_basic_diffuse/lamp.vert",
-        "src/ch02_lighting/01_2_basic_diffuse/lamp.frag",
+        "src/ch02_lighting/02_1_basic_diffuse/lamp.vert",
+        "src/ch02_lighting/02_1_basic_diffuse/lamp.frag",
     )
     .expect("Failed to create light cube shader");
 
