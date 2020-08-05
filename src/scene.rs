@@ -22,13 +22,13 @@ pub struct Scene {
     pub ctx: glfw::Glfw,
     pub window: glfw::Window,
     pub camera: Camera,
+    pub dt: f32,
     mouse: Mouse,
     events: Receiver<(f64, glfw::WindowEvent)>,
     width: u32,
     height: u32,
     ratio: f32,
     last_frame_ts: f64,
-    dt: f32,
     time_to_info: f32,
 }
 
