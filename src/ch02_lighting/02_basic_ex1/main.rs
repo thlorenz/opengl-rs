@@ -46,6 +46,11 @@ fn main() {
         let y: f32 = (time / 2.0).sin();
         let light_pos = glm::vec3(x, y, 2.0);
 
+        //  Rotate light around box slightly above
+        //  let x: f32 = time.sin() * -2.0;
+        //  let z: f32 = time.cos() * 2.0;
+        //  let light_pos = glm::vec3(x, 0.2, z);
+
         let model = glm::rotate(
             &model,
             (time * 20.0).to_radians(),
