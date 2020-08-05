@@ -4,11 +4,10 @@ out vec4 FragColor;
 
 in vec3 Normal;
 in vec3 FragPos;
+in vec3 LightPos;
 
 uniform vec3 objectColor;
 uniform vec3 lightColor;
-uniform vec3 lightPos;
-uniform vec3 camera;
 
 float ambientStrength = 0.1;
 float specularStrength = 0.5;
@@ -18,7 +17,7 @@ void main() {
     vec3 norm = normalize(Normal);
 
     // direction between light source and fragment's position
-    vec3 lightDir = normalize(lightPos - FragPos);
+    vec3 lightDir = normalize(LightPos - FragPos);
 
     //
     // Ambient Light Calculation
@@ -38,7 +37,9 @@ void main() {
     //
 
     // direction between camera (viewer) and fragment's position
-    vec3 cameraDir = normalize(camera - FragPos);
+    // when doing this calculation in view-space, the camera (view)
+    // is always at (0, 0, 0)
+    vec3 cameraDir = normalize(-FragPos);
     // direction of light reflecting off fragment
     vec3 reflectDir = reflect(-lightDir, norm);
 
