@@ -115,3 +115,7 @@ path= "src/ch02_lighting/02_basic_ex2/main.rs"
 [[bin]]
 name="ch02_03_1_materials"
 path= "src/ch02_lighting/03_1_materials/main.rs"
+
+[[bin]]
+name="ch02_04_1_diffuse_maps"
+path= "src/ch02_lighting/04_1_diffuse_maps/main.rs"
