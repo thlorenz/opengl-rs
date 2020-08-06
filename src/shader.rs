@@ -23,19 +23,23 @@ impl Shader {
             let c_str_vert = CString::new(vert_buffer).unwrap();
             gl::ShaderSource(vertex_shader, 1, &c_str_vert.as_ptr(), ptr::null());
             gl::CompileShader(vertex_shader);
-            check_for_errors(vertex_shader, gl::COMPILE_STATUS);
+            check_for_errors(vertex_path, vertex_shader, gl::COMPILE_STATUS);
 
             let fragment_shader = gl::CreateShader(gl::FRAGMENT_SHADER);
             let c_str_frag = CString::new(frag_buffer).unwrap();
             gl::ShaderSource(fragment_shader, 1, &c_str_frag.as_ptr(), ptr::null());
             gl::CompileShader(fragment_shader);
-            check_for_errors(fragment_shader, gl::COMPILE_STATUS);
+            check_for_errors(frag_path, fragment_shader, gl::COMPILE_STATUS);
 
             let shader_program = gl::CreateProgram();
             gl::AttachShader(shader_program, vertex_shader);
             gl::AttachShader(shader_program, fragment_shader);
             gl::LinkProgram(shader_program);
-            check_for_errors(shader_program, gl::LINK_STATUS);
+            check_for_errors(
+                &format!("[ {} + {} ]", vertex_path, frag_path),
+                shader_program,
+                gl::LINK_STATUS,
+            );
 
             gl::DeleteShader(vertex_shader);
             gl::DeleteShader(fragment_shader);
@@ -78,7 +82,7 @@ impl Shader {
     }
 }
 
-fn check_for_errors(item: u32, status_type: u32) {
+fn check_for_errors(path: &str, item: u32, status_type: u32) {
     let mut success = gl::FALSE as GLint;
     let mut info_log: Vec<u8> = vec![0; 512];
     unsafe {
@@ -92,7 +96,11 @@ fn check_for_errors(item: u32, status_type: u32) {
                     ptr::null_mut(),
                     info_log.as_mut_ptr() as *mut GLchar,
                 );
-                eprintln!("Compilation failed\n{}", str::from_utf8(&info_log).unwrap());
+                eprintln!(
+                    "Compilation failed of {}\n{}",
+                    path,
+                    str::from_utf8(&info_log).unwrap()
+                );
             }
         } else if status_type == gl::LINK_STATUS {
             gl::GetProgramiv(item, status_type, &mut success);
@@ -103,7 +111,11 @@ fn check_for_errors(item: u32, status_type: u32) {
                     ptr::null_mut(),
                     info_log.as_mut_ptr() as *mut GLchar,
                 );
-                eprintln!("Linking failed\n{}", str::from_utf8(&info_log).unwrap());
+                eprintln!(
+                    "Linking failed of {}\n{}",
+                    path,
+                    str::from_utf8(&info_log).unwrap()
+                );
             }
         }
     }
