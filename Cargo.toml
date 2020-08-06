@@ -112,7 +112,6 @@ path= "src/ch02_lighting/02_basic_ex1/main.rs"
 name="ch02_02_basic_ex2"
 path= "src/ch02_lighting/02_basic_ex2/main.rs"
 
-
 [[bin]]
 name="ch02_03_1_materials"
 path= "src/ch02_lighting/03_1_materials/main.rs"

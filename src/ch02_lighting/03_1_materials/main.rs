@@ -11,8 +11,8 @@ use std::ffi::CStr;
 fn main() {
     let mut scene = scene::Scene::default();
     scene.camera = Camera {
-        position: glm::vec3(-2.1, -0.4, 3.7),
-        pitch: 2.5,
+        position: glm::vec3(-2.0, -1.3, 3.3),
+        pitch: 27.0,
         yaw: -408.0,
         ..Camera::default()
     };
@@ -41,6 +41,13 @@ fn main() {
     while !scene.window.should_close() {
         scene.update_camera();
 
+        let time = scene.ctx.get_time() as f32;
+        let time_sin = time.sin();
+
+        let base_light = glm::vec3(time_sin * 2.0, time_sin * 0.7, time_sin * 1.3);
+        let light_diffuse = base_light * 0.5;
+        let light_ambient = light_diffuse * 0.2;
+
         unsafe {
             gl::ClearColor(0.1, 0.1, 0.1, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
@@ -57,8 +64,9 @@ fn main() {
             cube_shader.set_float(c_str!("material.shininess"), 32.0);
 
             cube_shader.set_vec3(c_str!("light.position"), &light_pos);
-            cube_shader.set_vec3(c_str!("light.ambient"), &glm::vec3(0.2, 0.2, 0.2));
-            cube_shader.set_vec3(c_str!("light.diffuse"), &glm::vec3(0.5, 0.5, 0.5));
+
+            cube_shader.set_vec3(c_str!("light.ambient"), &light_ambient);
+            cube_shader.set_vec3(c_str!("light.diffuse"), &light_diffuse);
             cube_shader.set_vec3(c_str!("light.specular"), &glm::vec3(1.0, 1.0, 1.0));
 
             cube_shader.set_mat4(c_str!("projection"), &projection);
