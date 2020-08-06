@@ -12,22 +12,22 @@ use std::ffi::CStr;
 fn main() {
     let mut scene = scene::Scene::default();
     scene.camera = Camera {
-        position: glm::vec3(-0.9, -1.5, 3.3),
-        pitch: 33.5,
-        yaw: -425.7,
+        position: glm::vec3(-1.42, -0.68, 1.46),
+        pitch: 21.4,
+        yaw: -401.8,
         ..Camera::default()
     };
     scene.camera.update_camera_vectors();
     scene.move_window_to_left_monitor();
 
     let cube_shader = Shader::new(
-        "src/ch02_lighting/04_2_specular_maps/cube.vert",
-        "src/ch02_lighting/04_2_specular_maps/cube.frag",
+        "src/ch02_lighting/04_2_specular_maps_ex4/cube.vert",
+        "src/ch02_lighting/04_2_specular_maps_ex4/cube.frag",
     )
     .expect("Failed to create lighting shader");
     let lamp_shader = Shader::new(
-        "src/ch02_lighting/04_2_specular_maps/lamp.vert",
-        "src/ch02_lighting/04_2_specular_maps/lamp.frag",
+        "src/ch02_lighting/04_2_specular_maps_ex4/lamp.vert",
+        "src/ch02_lighting/04_2_specular_maps_ex4/lamp.frag",
     )
     .expect("Failed to create light cube shader");
 
@@ -41,8 +41,10 @@ fn main() {
 
     let diffuse_map = load_texture("resources/textures/container2.png", false);
     let specular_map = load_texture("resources/textures/container2_specular.png", false);
+    let emission_map = load_texture("resources/textures/matrix.jpg", false);
     let diffuse_idx: u32 = 0;
     let specular_idx: u32 = 1;
+    let emission_idx: u32 = 2;
 
     while !scene.window.should_close() {
         scene.update_camera();
@@ -59,6 +61,7 @@ fn main() {
             cube_shader.use_program();
             cube_shader.set_int(c_str!("material.diffuse"), diffuse_idx as i32);
             cube_shader.set_int(c_str!("material.specular"), specular_idx as i32);
+            cube_shader.set_int(c_str!("material.emission"), emission_idx as i32);
             cube_shader.set_float(c_str!("material.shininess"), 32.0);
 
             cube_shader.set_vec3(c_str!("light.position"), &light_pos);
@@ -80,6 +83,9 @@ fn main() {
             // Specular Map
             gl::ActiveTexture(gl::TEXTURE0 + specular_idx);
             gl::BindTexture(gl::TEXTURE_2D, specular_map);
+            // Emission Map
+            gl::ActiveTexture(gl::TEXTURE0 + emission_idx);
+            gl::BindTexture(gl::TEXTURE_2D, emission_map);
 
             // Lamp
             lamp_shader.use_program();
