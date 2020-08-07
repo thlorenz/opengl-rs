@@ -127,3 +127,7 @@ path= "src/ch02_lighting/04_2_specular_maps/main.rs"
 [[bin]]
 name="ch02_04_2_specular_maps_ex4"
 path= "src/ch02_lighting/04_2_specular_maps_ex4/main.rs"
+
+[[bin]]
+name="ch02_05_1_light_casters_directional"
+path= "src/ch02_lighting/05_1_light_casters_directional/main.rs"
