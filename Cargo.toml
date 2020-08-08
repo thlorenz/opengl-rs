@@ -135,3 +135,7 @@ path= "src/ch02_lighting/05_1_light_casters_directional/main.rs"
 [[bin]]
 name="ch02_05_2_light_casters_point"
 path= "src/ch02_lighting/05_2_light_casters_point/main.rs"
+
+[[bin]]
+name="ch02_05_3_light_casters_spot"
+path= "src/ch02_lighting/05_3_light_casters_spot/main.rs"
