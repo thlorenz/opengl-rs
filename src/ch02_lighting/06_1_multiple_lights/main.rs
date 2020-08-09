@@ -132,6 +132,16 @@ fn main() {
                 .expect("initializing  point light");
         }
 
+        // Spotlight
+        cube_shader.set_float(c_str!("spotLight.cutOff"), 12.5_f32.to_radians().cos());
+        cube_shader.set_float(c_str!("spotLight.outerCutOff"), 17.5_f32.to_radians().cos());
+        cube_shader.set_vec3(c_str!("spotLight.ambient"), &glm::vec3(0.1, 0.1, 0.1));
+        cube_shader.set_vec3(c_str!("spotLight.diffuse"), &glm::vec3(0.8, 0.8, 0.8));
+        cube_shader.set_vec3(c_str!("spotLight.specular"), &glm::vec3(1.0, 1.0, 1.0));
+        cube_shader.set_float(c_str!("spotLight.constant"), 1.0);
+        cube_shader.set_float(c_str!("spotLight.linear"), 0.09);
+        cube_shader.set_float(c_str!("spotLight.quadratic"), 0.032);
+
         // Diffuse Map
         gl::ActiveTexture(gl::TEXTURE0 + diffuse_idx);
         gl::BindTexture(gl::TEXTURE_2D, diffuse_map);
@@ -160,6 +170,9 @@ fn main() {
             cube_shader.set_mat4(c_str!("projection"), &projection);
             cube_shader.set_mat4(c_str!("view"), &view);
             cube_shader.set_vec3(c_str!("viewPos"), &scene.camera.position);
+
+            cube_shader.set_vec3(c_str!("spotLight.position"), &scene.camera.position);
+            cube_shader.set_vec3(c_str!("spotLight.direction"), &scene.camera.front);
 
             gl::BindVertexArray(cube_vao);
             for (i, position) in cube_positions().iter().enumerate() {
