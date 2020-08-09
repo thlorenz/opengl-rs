@@ -143,3 +143,7 @@ path= "src/ch02_lighting/05_3_light_casters_spot/main.rs"
 [[bin]]
 name="ch02_05_4_light_casters_spot_soft"
 path= "src/ch02_lighting/05_4_light_casters_spot_soft/main.rs"
+
+[[bin]]
+name="ch02_06_1_multiple_lights"
+path= "src/ch02_lighting/06_1_multiple_lights/main.rs"
