@@ -27,6 +27,7 @@ impl Default for Vertex {
     }
 }
 
+#[derive(Clone)]
 pub enum TextureType {
     Diffuse,
     Specular,
@@ -34,10 +35,11 @@ pub enum TextureType {
     Height,
 }
 
+#[derive(Clone)]
 pub struct Texture {
     pub id: u32,
     pub typ: TextureType,
-    pub path: String,
+    pub file: String,
 }
 
 pub struct Mesh {
