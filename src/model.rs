@@ -1,5 +1,6 @@
 use crate::{
     mesh::{Mesh, Texture, TextureType, Vertex},
+    shader::Shader,
     util::load_texture,
 };
 use nalgebra_glm as glm;
@@ -18,6 +19,14 @@ impl Model {
         let mut model = Model::default();
         model.load_model(file);
         model
+    }
+
+    pub fn draw(&self, shader: &Shader) {
+        for mesh in &self.meshes {
+            unsafe {
+                mesh.draw(shader);
+            }
+        }
     }
 
     fn load_model(&mut self, path: &str) {
