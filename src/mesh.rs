@@ -2,6 +2,7 @@ use crate::shader::Shader;
 use nalgebra_glm as glm;
 use std::{
     ffi::{c_void, CString},
+    fmt::Display,
     mem::size_of,
     ptr,
 };
@@ -33,6 +34,18 @@ pub enum TextureType {
     Specular,
     Normal,
     Height,
+}
+
+impl Display for TextureType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            TextureType::Diffuse => f.write_str("diff"),
+            TextureType::Specular => f.write_str("spec"),
+            TextureType::Normal => f.write_str("norm"),
+            TextureType::Height => f.write_str("heig"),
+        }?;
+        Ok(())
+    }
 }
 
 #[derive(Clone)]
@@ -94,19 +107,31 @@ impl Mesh {
                     (height, "texture_height")
                 }
             };
-            let sample_2d = CString::new(format!("{}{}", texture_name, texture_idx)).unwrap();
+            let sampler_2d = CString::new(format!("{}{}", texture_name, texture_idx)).unwrap();
             gl::Uniform1i(
-                gl::GetUniformLocation(shader.id, sample_2d.as_ptr()),
+                gl::GetUniformLocation(shader.id, sampler_2d.as_ptr()),
                 i as i32,
             );
             gl::BindTexture(gl::TEXTURE_2D, texture.id);
         }
+
+        gl::BindVertexArray(self.vao);
+        gl::DrawElements(
+            gl::TRIANGLES,
+            self.indices.len() as i32,
+            gl::UNSIGNED_INT,
+            ptr::null(),
+        );
+
+        gl::BindVertexArray(0);
+        gl::ActiveTexture(gl::TEXTURE0);
     }
 
     unsafe fn setup_mesh(&mut self) {
         gl::GenVertexArrays(1, &mut self.vao);
         gl::GenBuffers(1, &mut self.vbo);
         gl::GenBuffers(1, &mut self.ebo);
+
         gl::BindVertexArray(self.vao);
 
         //
@@ -125,7 +150,7 @@ impl Mesh {
         // Elements Buffer Object (indices)
         //
 
-        gl::BindBuffer(gl::ARRAY_BUFFER, self.ebo);
+        gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, self.ebo);
         let size = (self.indices.len() * size_of::<u32>()) as isize;
         let data = &self.indices[0] as *const u32 as *const c_void;
         gl::BufferData(gl::ELEMENT_ARRAY_BUFFER, size, data, gl::STATIC_DRAW);

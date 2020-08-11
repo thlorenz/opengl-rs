@@ -148,3 +148,7 @@ path= "src/ch02_lighting/05_4_light_casters_spot_soft/main.rs"
 [[bin]]
 name="ch02_06_1_multiple_lights"
 path= "src/ch02_lighting/06_1_multiple_lights/main.rs"
+
+[[bin]]
+name="ch03_model_loading"
+path= "src/ch03_model_loading/main.rs"

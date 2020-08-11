@@ -94,10 +94,11 @@ impl Model {
     fn load_material_texture(&mut self, file: &str, typ: TextureType) -> Texture {
         let full_path = format!("{}/{}", self.directory, file);
         let texture = self.loaded_textures.iter().find(|t| t.file == file);
-
         if let Some(texture) = texture {
             return texture.clone();
         };
+        eprintln!("loading {} texture {}", typ, file);
+
         let id = load_texture(&full_path, true);
         let texture = Texture {
             id,
