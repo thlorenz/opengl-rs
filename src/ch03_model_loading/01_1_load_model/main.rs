@@ -23,15 +23,15 @@ fn main() {
 
     let (shader, model) = {
         let shader = Shader::new(
-            "src/ch03_model_loading/shader.vert",
-            "src/ch03_model_loading/shader.frag",
+            "src/ch03_model_loading/01_1_load_model/shader.vert",
+            "src/ch03_model_loading/01_1_load_model/shader.frag",
         )
         .expect("Failed to create shader");
 
+        let model = Model::new("resources/objects/nanosuit/nanosuit.obj", true);
         // let model = Model::new("resources/objects/backpack/backpack.obj", false);
-        // let model = Model::new("resources/objects/nanosuit/nanosuit.obj", true);
         // let model = Model::new("resources/objects/rock/rock.obj", false);
-        let model = Model::new("resources/objects/planet/planet.obj", false);
+        // let model = Model::new("resources/objects/planet/planet.obj", false);
 
         // unsafe { gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE) }
         (shader, model)
