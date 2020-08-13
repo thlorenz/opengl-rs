@@ -107,7 +107,8 @@ impl Mesh {
                     (height, "texture_height")
                 }
             };
-            let sampler_2d = CString::new(format!("{}{}", texture_name, texture_idx)).unwrap();
+            let sampler_2d_str = format!("{}{}", texture_name, texture_idx);
+            let sampler_2d = CString::new(sampler_2d_str).unwrap();
             gl::Uniform1i(
                 gl::GetUniformLocation(shader.id, sampler_2d.as_ptr()),
                 i as i32,

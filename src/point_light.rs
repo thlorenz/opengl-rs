@@ -10,8 +10,8 @@ pub struct PointLight {
     quadratic: f32,
 
     ambient: glm::Vec3,
-    diffuse: glm::Vec3,
-    specular: glm::Vec3,
+    pub diffuse: glm::Vec3,
+    pub specular: glm::Vec3,
 }
 
 impl Default for PointLight {

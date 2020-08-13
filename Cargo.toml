@@ -152,3 +152,7 @@ path= "src/ch02_lighting/06_1_multiple_lights/main.rs"
 [[bin]]
 name="ch03_01_1_load_model"
 path= "src/ch03_model_loading/01_1_load_model/main.rs"
+
+[[bin]]
+name="ch03_01_2_load_model_with_lights"
+path= "src/ch03_model_loading/01_2_load_model_with_lights/main.rs"
