@@ -40,8 +40,6 @@ fn main() {
         // let model = Model::new("resources/objects/backpack/backpack.obj", false);
         // let model = Model::new("resources/objects/rock/rock.obj", false);
         // let model = Model::new("resources/objects/planet/planet.obj", false);
-
-        // unsafe { gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE) }
         (shader, model, lamp_shader)
     };
 

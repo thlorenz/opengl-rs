@@ -139,6 +139,12 @@ impl Scene {
         if self.window.get_key(Key::Escape) == Action::Press {
             self.window.set_should_close(true);
         }
+        if self.window.get_key(Key::M) == Action::Press {
+            unsafe { gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE) }
+        }
+        if self.window.get_key(Key::F) == Action::Press {
+            unsafe { gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL) }
+        }
     }
 
     fn show_info(&mut self, dt: f32) {
