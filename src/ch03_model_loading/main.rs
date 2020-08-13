@@ -28,9 +28,10 @@ fn main() {
         )
         .expect("Failed to create shader");
 
-        let model = Model::new("resources/objects/nanosuit/nanosuit.obj");
-        // let model = Model::new("resources/objects/rock/rock.obj");
-        // let model = Model::new("resources/objects/planet/planet.obj");
+        // let model = Model::new("resources/objects/backpack/backpack.obj", false);
+        // let model = Model::new("resources/objects/nanosuit/nanosuit.obj", true);
+        // let model = Model::new("resources/objects/rock/rock.obj", false);
+        let model = Model::new("resources/objects/planet/planet.obj", false);
 
         // unsafe { gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE) }
         (shader, model)

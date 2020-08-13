@@ -11,12 +11,14 @@ use tobj;
 pub struct Model {
     pub meshes: Vec<Mesh>,
     pub loaded_textures: Vec<Texture>,
+    flip_texture_vertical: bool,
     directory: String,
 }
 
 impl Model {
-    pub fn new(file: &str) -> Self {
+    pub fn new(file: &str, flip_texture_vertical: bool) -> Self {
         let mut model = Model::default();
+        model.flip_texture_vertical = flip_texture_vertical;
         model.load_model(file);
         model
     }
@@ -99,7 +101,7 @@ impl Model {
         };
         eprintln!("loading {} texture {}", typ, file);
 
-        let id = load_texture(&full_path, true);
+        let id = load_texture(&full_path, self.flip_texture_vertical);
         let texture = Texture {
             id,
             typ,
