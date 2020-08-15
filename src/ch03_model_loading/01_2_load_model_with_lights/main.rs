@@ -11,9 +11,9 @@ use std::ffi::CStr;
 fn main() {
     let mut scene = scene::Scene::default();
     scene.camera = Camera {
-        position: glm::vec3(-9.61, 8.06, 6.85),
-        pitch: 15.00,
-        yaw: -39.27,
+        position: glm::vec3(-10.18, 5.75, -7.20),
+        pitch: 15.62,
+        yaw: 32.98,
         ..Camera::default()
     };
     scene.camera.update_camera_vectors();
@@ -23,7 +23,7 @@ fn main() {
         gl::Enable(gl::DEPTH_TEST);
     }
 
-    let (shader, model, lamp_shader) = {
+    let (shader, suit_model, backpack_model, lamp_shader) = {
         let shader = Shader::new(
             "src/ch03_model_loading/01_2_load_model_with_lights/shader.vert",
             "src/ch03_model_loading/01_2_load_model_with_lights/shader.frag",
@@ -36,15 +36,15 @@ fn main() {
         )
         .expect("Failed to create lamp shader");
 
-        let model = Model::new("resources/objects/nanosuit/nanosuit.obj", true);
-        // let model = Model::new("resources/objects/backpack/backpack.obj", false);
+        let suit_model = Model::new("resources/objects/nanosuit/nanosuit.obj", true);
+        let backpack_model = Model::new("resources/objects/backpack/backpack.obj", false);
         // let model = Model::new("resources/objects/rock/rock.obj", false);
         // let model = Model::new("resources/objects/planet/planet.obj", false);
-        (shader, model, lamp_shader)
+        (shader, suit_model, backpack_model, lamp_shader)
     };
 
     let lamp_vao = create_box_vao();
-    let lamp_pos = glm::vec3(0.7, 14.0, 2.0);
+    let lamp_pos = glm::vec3(-3.0, 14.0, -2.0);
     let lamp_color = glm::vec3(0.1, 0.1, 8.0);
     let mut point_light = PointLight::at(lamp_pos);
     point_light.diffuse = lamp_color;
@@ -101,7 +101,14 @@ fn main() {
             let model_position = glm::vec3(0.0, -1.75, 0.0);
             let translated = glm::translate(&glm::Mat4::identity(), &model_position);
             shader.set_mat4(c_str!("model"), &translated);
-            model.draw(&shader);
+            suit_model.draw(&shader);
+
+            let model_position = glm::vec3(0.0, 9.5, -2.8);
+            let translated = glm::translate(&glm::Mat4::identity(), &model_position);
+            let scaled = glm::scale(&translated, &glm::vec3(1.35, 1.35, 1.35));
+            let rotated = glm::rotate(&scaled, 180_f32.to_radians(), &glm::vec3(0.0, 1.0, 0.0));
+            shader.set_mat4(c_str!("model"), &rotated);
+            backpack_model.draw(&shader);
 
             // Lamp
             lamp_shader.use_program();
