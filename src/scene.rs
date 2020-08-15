@@ -23,6 +23,7 @@ pub struct Scene {
     pub window: glfw::Window,
     pub camera: Camera,
     pub dt: f32,
+    pub show_depth: bool,
     mouse: Mouse,
     events: Receiver<(f64, glfw::WindowEvent)>,
     width: u32,
@@ -64,12 +65,14 @@ impl Default for Scene {
         let ratio = width as f32 / height as f32;
 
         let last_frame_ts = ctx.get_time();
+        let show_depth = false;
 
         Scene {
             ctx,
             window,
             camera,
             mouse,
+            show_depth,
             events,
             width,
             height,
@@ -124,6 +127,7 @@ impl Scene {
     }
 
     fn process_input(&mut self, dt: f32) {
+        let shift = self.window.get_key(Key::LeftShift) == Action::Press;
         if self.window.get_key(Key::W) == Action::Press {
             self.camera.process_keyboard(CameraMovement::Forward, dt);
         }
@@ -142,8 +146,14 @@ impl Scene {
         if self.window.get_key(Key::M) == Action::Press {
             unsafe { gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE) }
         }
-        if self.window.get_key(Key::F) == Action::Press {
+        if self.window.get_key(Key::M) == Action::Press && shift {
             unsafe { gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL) }
+        }
+        if self.window.get_key(Key::Z) == Action::Press {
+            self.show_depth = true;
+        }
+        if self.window.get_key(Key::Z) == Action::Press && shift {
+            self.show_depth = false;
         }
     }
 

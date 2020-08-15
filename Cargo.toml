@@ -156,3 +156,7 @@ path= "src/ch03_model_loading/01_1_load_model/main.rs"
 [[bin]]
 name="ch03_01_2_load_model_with_lights"
 path= "src/ch03_model_loading/01_2_load_model_with_lights/main.rs"
+
+[[bin]]
+name="ch04_01_1_depth_testing"
+path= "src/ch04_advanced_opengl/01_1_depth_testing/main.rs"
