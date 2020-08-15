@@ -35,6 +35,12 @@ pub struct Scene {
 
 impl Default for Scene {
     fn default() -> Self {
+        Self::new(SCREEN_WIDTH, SCREEN_HEIGHT)
+    }
+}
+
+impl Scene {
+    pub fn new(width: u32, height: u32) -> Self {
         let mut ctx = glfw::init(glfw::FAIL_ON_ERRORS.clone()).unwrap();
         ctx.window_hint(glfw::WindowHint::ContextVersion(3, 3));
         ctx.window_hint(glfw::WindowHint::OpenGlProfile(
@@ -44,7 +50,6 @@ impl Default for Scene {
         #[cfg(target_os = "macos")]
         ctx.window_hint(glfw::WindowHint::OpenGlForwardCompat(true));
 
-        let (width, height) = (SCREEN_WIDTH, SCREEN_HEIGHT);
         let (mut window, events) = ctx
             .create_window(width, height, "Learn OpenGL", glfw::WindowMode::Windowed)
             .expect("Create Window");
@@ -82,9 +87,6 @@ impl Default for Scene {
             time_to_info: 0.0,
         }
     }
-}
-
-impl Scene {
     pub fn move_window_to_left_monitor(&mut self) {
         self.window.set_pos(-(SCREEN_WIDTH as i32), 0);
     }
