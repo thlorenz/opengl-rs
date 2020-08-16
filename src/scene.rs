@@ -10,11 +10,16 @@ pub const SCREEN_HEIGHT: u32 = 600;
 pub struct Mouse {
     pub x: f32,
     pub y: f32,
+    seen: bool,
 }
 
 impl Default for Mouse {
     fn default() -> Self {
-        Mouse { x: 0.0, y: 0.0 }
+        Mouse {
+            x: 0.0,
+            y: 0.0,
+            seen: false,
+        }
     }
 }
 
@@ -113,9 +118,13 @@ impl Scene {
                     let (x, y) = (x as f32, y as f32);
 
                     if self.window.get_mouse_button(glfw::MouseButtonLeft) == Action::Press {
-                        let dx = x - self.mouse.x;
-                        let dy = y - self.mouse.y;
+                        let (dx, dy) = if self.mouse.seen {
+                            (x - self.mouse.x, y - self.mouse.y)
+                        } else {
+                            (0.0, 0.0)
+                        };
                         self.camera.process_mouse_move(dx, dy, true);
+                        self.mouse.seen = true;
                     }
                     self.mouse.x = x;
                     self.mouse.y = y;
