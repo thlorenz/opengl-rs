@@ -36,6 +36,8 @@ pub struct Scene {
     ratio: f32,
     last_frame_ts: f64,
     time_to_info: f32,
+    delay_toggle_until: f64,
+    show_mesh: bool,
 }
 
 impl Default for Scene {
@@ -90,6 +92,8 @@ impl Scene {
             last_frame_ts,
             dt: 0.0,
             time_to_info: 0.0,
+            delay_toggle_until: 0.0,
+            show_mesh: false,
         }
     }
     pub fn move_window_to_left_monitor(&mut self) {
@@ -101,7 +105,7 @@ impl Scene {
         let dt = (time - self.last_frame_ts) as f32;
 
         self.process_events();
-        self.process_input(dt);
+        self.process_input(time, dt);
         self.show_info(dt);
 
         self.last_frame_ts = time;
@@ -137,8 +141,9 @@ impl Scene {
         }
     }
 
-    fn process_input(&mut self, dt: f32) {
-        let shift = self.window.get_key(Key::LeftShift) == Action::Press;
+    fn process_input(&mut self, time: f64, dt: f32) {
+        let process_toggle = self.delay_toggle_until < time;
+
         if self.window.get_key(Key::W) == Action::Press {
             self.camera.process_keyboard(CameraMovement::Forward, dt);
         }
@@ -154,18 +159,27 @@ impl Scene {
         if self.window.get_key(Key::Escape) == Action::Press {
             self.window.set_should_close(true);
         }
-        if self.window.get_key(Key::M) == Action::Press {
-            unsafe { gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE) }
+        if process_toggle {
+            if self.window.get_key(Key::M) == Action::Press {
+                self.show_mesh = !self.show_mesh;
+                unsafe {
+                    if self.show_mesh {
+                        gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
+                    } else {
+                        gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
+                    }
+                }
+                self.reset_delay_toggle(time);
+            }
+            if self.window.get_key(Key::Z) == Action::Press {
+                self.show_depth = !self.show_depth;
+                self.reset_delay_toggle(time);
+            }
         }
-        if self.window.get_key(Key::M) == Action::Press && shift {
-            unsafe { gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL) }
-        }
-        if self.window.get_key(Key::Z) == Action::Press {
-            self.show_depth = true;
-        }
-        if self.window.get_key(Key::Z) == Action::Press && shift {
-            self.show_depth = false;
-        }
+    }
+
+    fn reset_delay_toggle(&mut self, time: f64) {
+        self.delay_toggle_until = time + 0.25;
     }
 
     fn show_info(&mut self, dt: f32) {
