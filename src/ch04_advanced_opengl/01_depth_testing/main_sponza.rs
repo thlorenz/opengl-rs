@@ -24,8 +24,8 @@ fn main() {
 
     let (shader, model) = {
         let shader = Shader::new(
-            "src/ch04_advanced_opengl/01_1_depth_testing/shader_sponza.vert",
-            "src/ch04_advanced_opengl/01_1_depth_testing/shader_sponza.frag",
+            "src/ch04_advanced_opengl/01_depth_testing/shader_sponza.vert",
+            "src/ch04_advanced_opengl/01_depth_testing/shader_sponza.frag",
         )
         .expect("Failed to create shader");
 
