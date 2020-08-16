@@ -164,3 +164,7 @@ path= "src/ch04_advanced_opengl/01_depth_testing/main.rs"
 [[bin]]
 name="ch04_01_depth_testing_sponza"
 path= "src/ch04_advanced_opengl/01_depth_testing/main_sponza.rs"
+
+[[bin]]
+name="ch04_02_stencil_testing"
+path= "src/ch04_advanced_opengl/02_stencil_testing/main.rs"
