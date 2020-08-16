@@ -73,7 +73,8 @@ impl Camera {
         let dy = dy * self.mouse_sensitivity;
 
         self.yaw += dx;
-        self.pitch += dy;
+        // Change this to += if not on a Mac, i.e. if your Y mouse/trackpad drag work backwards
+        self.pitch -= dy;
 
         if constrain_pitch {
             if self.pitch > 89.0 {
