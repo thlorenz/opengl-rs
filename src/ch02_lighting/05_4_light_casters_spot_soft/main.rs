@@ -34,8 +34,11 @@ fn main() {
         gl::Enable(gl::DEPTH_TEST);
     }
 
-    let diffuse_map = load_texture("resources/textures/container2.png", false);
-    let specular_map = load_texture("resources/textures/container2_specular.png", false);
+    let diffuse_map = load_texture("resources/textures/container2.png", Default::default());
+    let specular_map = load_texture(
+        "resources/textures/container2_specular.png",
+        Default::default(),
+    );
     let diffuse_idx: u32 = 0;
     let specular_idx: u32 = 1;
 

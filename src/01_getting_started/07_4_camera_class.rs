@@ -10,6 +10,7 @@ use opengl::c_str;
 use opengl::shader::Shader;
 use opengl::{scene, util};
 use std::ffi::CStr;
+use util::LoadTextureOpts;
 
 pub fn main() {
     let mut scene = scene::Scene::default();
@@ -22,8 +23,15 @@ pub fn main() {
 
     let vao = chapter::create_box_vao();
 
-    let container_texture = util::load_texture("resources/textures/container.jpg", false);
-    let smiley_texture = util::load_texture("resources/textures/awesomeface.png", true);
+    let container_texture =
+        util::load_texture("resources/textures/container.jpg", Default::default());
+    let smiley_texture = util::load_texture(
+        "resources/textures/awesomeface.png",
+        LoadTextureOpts {
+            vflip: true,
+            ..Default::default()
+        },
+    );
 
     let cube_positions = chapter::cube_positions();
 

@@ -40,8 +40,8 @@ fn main() {
         let cube_vao = create_textured_cube_vao();
         let plane_vao = create_textured_plane_vao();
 
-        let cube_texture = load_texture("resources/textures/marble.jpg", false);
-        let floor_texture = load_texture("resources/textures/metal.png", false);
+        let cube_texture = load_texture("resources/textures/marble.jpg", Default::default());
+        let floor_texture = load_texture("resources/textures/metal.png", Default::default());
 
         shader.use_program();
         shader.set_int(c_str!("texture1"), 0);

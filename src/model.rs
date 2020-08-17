@@ -1,7 +1,7 @@
 use crate::{
     mesh::{Mesh, Texture, TextureType, Vertex},
     shader::Shader,
-    util::load_texture,
+    util::{load_texture, LoadTextureOpts},
 };
 use nalgebra_glm as glm;
 use std::path::Path;
@@ -101,7 +101,13 @@ impl Model {
         };
         eprintln!("loading {} texture {}", typ, file);
 
-        let id = load_texture(&full_path, self.flip_texture_vertical);
+        let id = load_texture(
+            &full_path,
+            LoadTextureOpts {
+                vflip: self.flip_texture_vertical,
+                ..Default::default()
+            },
+        );
         let texture = Texture {
             id,
             typ,

@@ -2,7 +2,21 @@ extern crate gl;
 use image::{DynamicImage, GenericImageView};
 use std::ffi::c_void;
 
-pub fn load_texture(path: &str, vflip: bool) -> u32 {
+pub struct LoadTextureOpts {
+    pub vflip: bool,
+    pub clamp_alpha: bool,
+}
+
+impl Default for LoadTextureOpts {
+    fn default() -> Self {
+        Self {
+            vflip: false,
+            clamp_alpha: false,
+        }
+    }
+}
+
+pub fn load_texture(path: &str, LoadTextureOpts { vflip, clamp_alpha }: LoadTextureOpts) -> u32 {
     let mut texture = 0;
 
     let img = image::open(path).expect("Failed to load texture image");
@@ -35,7 +49,7 @@ pub fn load_texture(path: &str, vflip: bool) -> u32 {
         gl::GenerateMipmap(gl::TEXTURE_2D);
 
         // Wrapping
-        let wrap_type = if has_alpha {
+        let wrap_type = if clamp_alpha && has_alpha {
             gl::CLAMP_TO_EDGE
         } else {
             gl::REPEAT

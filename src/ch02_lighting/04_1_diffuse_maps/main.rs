@@ -39,7 +39,7 @@ fn main() {
         gl::Enable(gl::DEPTH_TEST);
     }
 
-    let diffuse_map = load_texture("resources/textures/container2.png", false);
+    let diffuse_map = load_texture("resources/textures/container2.png", Default::default());
     let diffuse_idx: u32 = 0;
 
     while !scene.window.should_close() {
