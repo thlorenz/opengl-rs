@@ -172,3 +172,7 @@ path= "src/ch04_advanced_opengl/02_stencil_testing/main.rs"
 [[bin]]
 name="ch04_03_1_blending_discard"
 path= "src/ch04_advanced_opengl/03_1_blending_discard/main.rs"
+
+[[bin]]
+name="ch04_03_2_blending_sorted"
+path= "src/ch04_advanced_opengl/03_2_blending_sorted/main.rs"

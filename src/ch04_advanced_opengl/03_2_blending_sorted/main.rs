@@ -16,7 +16,9 @@ use std::ffi::CStr;
 fn main() {
     let mut scene = scene::Scene::default();
     scene.camera = Camera {
-        position: glm::vec3(0.0, 0.0, 3.0),
+        position: glm::vec3(1.31, 1.27, 3.07),
+        pitch: -16.34,
+        yaw: -105.45,
         ..Camera::default()
     };
     scene.camera.update_camera_vectors();
@@ -30,25 +32,27 @@ fn main() {
         cube_texture,
         floor_texture,
         transparent_texture,
-        vegetation,
+        mut windows,
     ) = unsafe {
         gl::Enable(gl::DEPTH_TEST);
+        gl::Enable(gl::BLEND);
+        gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
 
         let shader = Shader::new(
-            "src/ch04_advanced_opengl/03_1_blending_discard/shader.vert",
-            "src/ch04_advanced_opengl/03_1_blending_discard/shader.frag",
+            "src/ch04_advanced_opengl/03_2_blending_sorted/shader.vert",
+            "src/ch04_advanced_opengl/03_2_blending_sorted/shader.frag",
         )
         .expect("Failed to create shader");
 
         let cube_vao = create_textured_cube_vao();
         let plane_vao = create_textured_plane_vao();
         let transparent_vao = create_textured_transparent_vao();
-        let vegetation = vec3_transparent_pos();
+        let windows = vec3_transparent_pos();
 
         let cube_texture = load_texture("resources/textures/marble.jpg", Default::default());
         let floor_texture = load_texture("resources/textures/metal.png", Default::default());
         let transparent_texture = load_texture(
-            "resources/textures/grass.png",
+            "resources/textures/window.png",
             LoadTextureOpts {
                 vflip: true,
                 clamp_alpha: true,
@@ -67,12 +71,18 @@ fn main() {
             cube_texture,
             floor_texture,
             transparent_texture,
-            vegetation,
+            windows,
         )
     };
 
     while !scene.window.should_close() {
         scene.update_camera();
+
+        windows.sort_by(|a, b| {
+            let distance_a = glm::length(&(scene.camera.position - a));
+            let distance_b = glm::length(&(scene.camera.position - b));
+            (&distance_b).partial_cmp(&distance_a).unwrap()
+        });
 
         unsafe {
             gl::ClearColor(0.1, 0.1, 0.1, 1.0);
@@ -116,7 +126,7 @@ fn main() {
             //
             gl::BindVertexArray(transparent_vao);
             gl::BindTexture(gl::TEXTURE_2D, transparent_texture);
-            for v in &vegetation {
+            for v in &windows {
                 let model = glm::translate(&glm::Mat4::identity(), v);
                 shader.set_mat4(c_str!("model"), &model);
                 gl::DrawArrays(gl::TRIANGLES, 0, 6);

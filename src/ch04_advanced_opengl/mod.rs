@@ -17,7 +17,7 @@ pub fn create_textured_plane_vao() -> u32 {
 }
 
 #[rustfmt::skip]
-pub fn vec3_vegetation() -> [glm::Vec3; 5] {
+pub fn vec3_transparent_pos() -> [glm::Vec3; 5] {
     [
         glm::vec3(-1.5, 0.0, -0.48),
         glm::vec3( 1.5, 0.0,  0.51),
