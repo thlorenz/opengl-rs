@@ -5,13 +5,14 @@ use opengl::{
     camera::Camera,
     ch04_advanced_opengl::{
         create_textured_cube_vao, create_textured_plane_vao, create_textured_quad_vao,
+        setup_texture_framebuffer,
     },
     scene,
     shader::Shader,
     util::load_texture,
 };
 use scene::{SCREEN_HEIGHT, SCREEN_WIDTH};
-use std::{ffi::CStr, ptr};
+use std::ffi::CStr;
 
 fn main() {
     let mut scene = scene::Scene::default();
@@ -60,58 +61,8 @@ fn main() {
         screen_shader.use_program();
         screen_shader.set_int(c_str!("screenTexture"), 0);
 
-        // Setup framebuffer
-        let mut framebuffer = 0;
-        let mut texture_color_buffer = 0;
-        gl::GenFramebuffers(1, &mut framebuffer);
-        gl::BindFramebuffer(gl::FRAMEBUFFER, framebuffer);
-        {
-            // Create color attachment texture
-            gl::GenTextures(1, &mut texture_color_buffer);
-            gl::BindTexture(gl::TEXTURE_2D, texture_color_buffer);
-            gl::TexImage2D(
-                gl::TEXTURE_2D,
-                0,
-                gl::RGB as i32,
-                SCREEN_WIDTH as i32,
-                SCREEN_HEIGHT as i32,
-                0,
-                gl::RGB,
-                gl::UNSIGNED_BYTE,
-                ptr::null(),
-            );
-            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
-            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
-            gl::FramebufferTexture2D(
-                gl::FRAMEBUFFER,
-                gl::COLOR_ATTACHMENT0,
-                gl::TEXTURE_2D,
-                texture_color_buffer,
-                0,
-            );
-
-            // Create RenderBuffer object for depth and stencil attachement
-            let mut rbo = 0;
-            gl::GenRenderbuffers(1, &mut rbo);
-            gl::BindRenderbuffer(gl::RENDERBUFFER, rbo);
-            gl::RenderbufferStorage(
-                gl::RENDERBUFFER,
-                gl::DEPTH24_STENCIL8,
-                SCREEN_WIDTH as i32,
-                SCREEN_HEIGHT as i32,
-            );
-            gl::FramebufferRenderbuffer(
-                gl::FRAMEBUFFER,
-                gl::DEPTH_STENCIL_ATTACHMENT,
-                gl::RENDERBUFFER,
-                rbo,
-            );
-
-            if gl::CheckFramebufferStatus(gl::FRAMEBUFFER) != gl::FRAMEBUFFER_COMPLETE {
-                eprintln!("ERROR:FRAMEBUFFER: Framebuffer not completed");
-            }
-        }
-        gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+        let (framebuffer, texture_color_buffer) =
+            setup_texture_framebuffer(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         (
             shader,

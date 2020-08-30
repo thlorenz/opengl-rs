@@ -180,3 +180,7 @@ path= "src/ch04_advanced_opengl/03_2_blending_sorted/main.rs"
 [[bin]]
 name="ch04_05_1_framebuffers"
 path= "src/ch04_advanced_opengl/05_1_framebuffers/main.rs"
+
+[[bin]]
+name="ch04_05_ex1_mirror"
+path= "src/ch04_advanced_opengl/05_ex1_mirror/main.rs"

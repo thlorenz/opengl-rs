@@ -9,6 +9,7 @@ pub enum CameraMovement {
     Right,
 }
 
+#[derive(Clone, Copy)]
 pub struct Camera {
     pub position: glm::Vec3,
     pub front: glm::Vec3,
@@ -50,6 +51,14 @@ impl Camera {
         glm::look_at(&self.position, &target, &self.up)
     }
 
+    pub fn get_back_view(&self) -> TMat4<f32> {
+        let mut reversed = self.clone();
+        reversed.yaw += 180.0_f32;
+        reversed.pitch = -reversed.pitch;
+        reversed.update_camera_vectors();
+        reversed.get_view()
+    }
+
     pub fn process_keyboard(&mut self, direction: CameraMovement, dt: f32) {
         let velocity = self.mov_speed * dt;
         match direction {
@@ -77,14 +86,18 @@ impl Camera {
         self.pitch -= dy;
 
         if constrain_pitch {
-            if self.pitch > 89.0 {
-                self.pitch = 89.0
-            }
-            if self.pitch < -89.0 {
-                self.pitch = -89.0
-            }
+            self.constrain_pitch();
         }
         self.update_camera_vectors();
+    }
+
+    fn constrain_pitch(&mut self) {
+        if self.pitch > 89.0 {
+            self.pitch = 89.0
+        }
+        if self.pitch < -89.0 {
+            self.pitch = -89.0
+        }
     }
 
     pub fn process_mouse_scroll(&mut self, dy: f32) {
