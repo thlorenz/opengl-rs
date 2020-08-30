@@ -16,6 +16,11 @@ pub fn create_textured_plane_vao() -> u32 {
     create_textured_vao(npos, ntex, stride, vertices.to_vec())
 }
 
+pub fn create_textured_quad_vao() -> u32 {
+    let (npos, ntex, stride, vertices) = vertices_quad_pos_tex();
+    create_textured_vao(npos, ntex, stride, vertices.to_vec())
+}
+
 #[rustfmt::skip]
 pub fn vec3_transparent_pos() -> [glm::Vec3; 5] {
     [
@@ -105,6 +110,27 @@ fn vertices_plane_pos_tex() -> (usize, usize, i32, [f32; (3 + 2) * 1 * 6]) {
          5.0, -0.5,  5.0,      2.0, 0.0,
         -5.0, -0.5, -5.0,      0.0, 2.0,
          5.0, -0.5, -5.0,      2.0, 2.0
+    ];
+    (NPOS, NTEX, stride, vertices)
+}
+
+fn vertices_quad_pos_tex() -> (usize, usize, i32, [f32; (2 + 2) * 1 * 6]) {
+    const NPOS: usize = 2;
+    const NTEX: usize = 2;
+    const NROWS: usize = 1;
+    const NSIDES: usize = 6;
+    let stride = (NPOS + NTEX) as i32 * mem::size_of::<GLfloat>() as GLsizei;
+
+    #[rustfmt::skip]
+    let vertices: [f32;  (NPOS + NTEX) * NROWS * NSIDES] = [
+        //   position    texture
+        -1.0,  1.0,     0.0, 1.0,
+        -1.0, -1.0,     0.0, 0.0,
+         1.0, -1.0,     1.0, 0.0,
+
+        -1.0,  1.0,     0.0, 1.0,
+         1.0, -1.0,     1.0, 0.0,
+         1.0,  1.0,     1.0, 1.0
     ];
     (NPOS, NTEX, stride, vertices)
 }

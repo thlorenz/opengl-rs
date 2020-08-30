@@ -176,3 +176,7 @@ path= "src/ch04_advanced_opengl/03_1_blending_discard/main.rs"
 [[bin]]
 name="ch04_03_2_blending_sorted"
 path= "src/ch04_advanced_opengl/03_2_blending_sorted/main.rs"
+
+[[bin]]
+name="ch04_05_1_framebuffers"
+path= "src/ch04_advanced_opengl/05_1_framebuffers/main.rs"
