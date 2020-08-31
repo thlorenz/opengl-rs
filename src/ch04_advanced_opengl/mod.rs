@@ -11,6 +11,11 @@ pub fn create_textured_cube_vao() -> u32 {
     create_textured_vao(npos, ntex, stride, vertices.to_vec())
 }
 
+pub fn create_normals_textured_cube_vao() -> u32 {
+    let (npos, nnorm, ntex, stride, vertices) = vertices_box_pos_norm_tex();
+    create_normals_textured_vao(npos, nnorm, ntex, stride, vertices.to_vec())
+}
+
 pub fn create_textured_plane_vao() -> u32 {
     let (npos, ntex, stride, vertices) = vertices_plane_pos_tex();
     create_textured_vao(npos, ntex, stride, vertices.to_vec())
@@ -24,6 +29,11 @@ pub fn create_textured_quad_vao() -> u32 {
 pub fn create_skybox_vao() -> u32 {
     let (npos, stride, vertices) = vertices_skybox_pos();
     create_vao(npos, stride, vertices.to_vec())
+}
+
+pub fn create_textured_transparent_vao() -> u32 {
+    let (npos, ntex, stride, vertices) = vertices_transparent_pos_tex();
+    create_textured_vao(npos, ntex, stride, vertices.to_vec())
 }
 
 pub unsafe fn setup_texture_framebuffer(screen_width: u32, screen_height: u32) -> (u32, u32) {
@@ -93,9 +103,56 @@ pub fn vec3_transparent_pos() -> [glm::Vec3; 5] {
     ]
 }
 
-pub fn create_textured_transparent_vao() -> u32 {
-    let (npos, ntex, stride, vertices) = vertices_transparent_pos_tex();
-    create_textured_vao(npos, ntex, stride, vertices.to_vec())
+fn create_normals_textured_vao(
+    npos: usize,
+    nnorm: usize,
+    ntex: usize,
+    stride: i32,
+    vertices: Vec<f32>,
+) -> u32 {
+    unsafe {
+        let (mut vbo, mut vao) = (0, 0);
+        gl::GenBuffers(1, &mut vbo);
+        gl::GenVertexArrays(1, &mut vao);
+        {
+            // load vertices into vbo
+            gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
+            gl::BufferData(
+                gl::ARRAY_BUFFER,
+                (vertices.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
+                &vertices[0] as *const f32 as *const c_void,
+                gl::STATIC_DRAW,
+            );
+
+            // vao
+            gl::BindVertexArray(vao);
+            gl::VertexAttribPointer(0, npos as i32, gl::FLOAT, gl::FALSE, stride, ptr::null());
+            gl::EnableVertexAttribArray(0);
+
+            // normal attrib
+            gl::VertexAttribPointer(
+                1,
+                nnorm as i32,
+                gl::FLOAT,
+                gl::FALSE,
+                stride,
+                (npos as i32 * mem::size_of::<GLfloat>() as GLsizei) as *const c_void,
+            );
+            gl::EnableVertexAttribArray(1);
+
+            // texture attrib
+            gl::VertexAttribPointer(
+                2,
+                ntex as i32,
+                gl::FLOAT,
+                gl::FALSE,
+                stride,
+                ((npos + nnorm) as i32 * mem::size_of::<GLfloat>() as GLsizei) as *const c_void,
+            );
+            gl::EnableVertexAttribArray(2);
+        }
+        vao
+    }
 }
 
 fn create_textured_vao(npos: usize, ntex: usize, stride: i32, vertices: Vec<f32>) -> u32 {
@@ -324,4 +381,59 @@ fn vertices_box_pos_tex() -> (usize, usize, i32, [f32; (3 + 2) * 6 * 6]) {
         -0.5,  0.5, -0.5,      0.0,  1.0
     ];
     (NPOS, NTEX, stride, vertices)
+}
+
+fn vertices_box_pos_norm_tex() -> (usize, usize, usize, i32, [f32; (3 + 3 + 2) * 6 * 6]) {
+    const NPOS: usize = 3;
+    const NNORM: usize = 3;
+    const NTEX: usize = 2;
+    const NROWS: usize = 6;
+    const NSIDES: usize = 6;
+    let stride = (NPOS + NNORM + NTEX) as i32 * mem::size_of::<GLfloat>() as GLsizei;
+    #[rustfmt::skip]
+    let vertices: [f32;  (NPOS + NNORM + NTEX) * NROWS * NSIDES] = [
+        //   position               normal            texture
+        -0.5, -0.5, -0.5,      0.0,  0.0, -1.0,      0.0,  0.0,
+         0.5, -0.5, -0.5,      0.0,  0.0, -1.0,      1.0,  0.0,
+         0.5,  0.5, -0.5,      0.0,  0.0, -1.0,      1.0,  1.0,
+         0.5,  0.5, -0.5,      0.0,  0.0, -1.0,      1.0,  1.0,
+        -0.5,  0.5, -0.5,      0.0,  0.0, -1.0,      0.0,  1.0,
+        -0.5, -0.5, -0.5,      0.0,  0.0, -1.0,      0.0,  0.0,
+
+        -0.5, -0.5,  0.5,      0.0,  0.0,  1.0,      0.0,  0.0,
+         0.5, -0.5,  0.5,      0.0,  0.0,  1.0,      1.0,  0.0,
+         0.5,  0.5,  0.5,      0.0,  0.0,  1.0,      1.0,  1.0,
+         0.5,  0.5,  0.5,      0.0,  0.0,  1.0,      1.0,  1.0,
+        -0.5,  0.5,  0.5,      0.0,  0.0,  1.0,      0.0,  1.0,
+        -0.5, -0.5,  0.5,      0.0,  0.0,  1.0,      0.0,  0.0,
+
+        -0.5,  0.5,  0.5,     -1.0,  0.0,  0.0,      1.0,  0.0,
+        -0.5,  0.5, -0.5,     -1.0,  0.0,  0.0,      1.0,  1.0,
+        -0.5, -0.5, -0.5,     -1.0,  0.0,  0.0,      0.0,  1.0,
+        -0.5, -0.5, -0.5,     -1.0,  0.0,  0.0,      0.0,  1.0,
+        -0.5, -0.5,  0.5,     -1.0,  0.0,  0.0,      0.0,  0.0,
+        -0.5,  0.5,  0.5,     -1.0,  0.0,  0.0,      1.0,  0.0,
+
+         0.5,  0.5,  0.5,      1.0,  0.0,  0.0,      1.0,  0.0,
+         0.5,  0.5, -0.5,      1.0,  0.0,  0.0,      1.0,  1.0,
+         0.5, -0.5, -0.5,      1.0,  0.0,  0.0,      0.0,  1.0,
+         0.5, -0.5, -0.5,      1.0,  0.0,  0.0,      0.0,  1.0,
+         0.5, -0.5,  0.5,      1.0,  0.0,  0.0,      0.0,  0.0,
+         0.5,  0.5,  0.5,      1.0,  0.0,  0.0,      1.0,  0.0,
+
+        -0.5, -0.5, -0.5,      0.0, -1.0,  0.0,      0.0,  1.0,
+         0.5, -0.5, -0.5,      0.0, -1.0,  0.0,      1.0,  1.0,
+         0.5, -0.5,  0.5,      0.0, -1.0,  0.0,      1.0,  0.0,
+         0.5, -0.5,  0.5,      0.0, -1.0,  0.0,      1.0,  0.0,
+        -0.5, -0.5,  0.5,      0.0, -1.0,  0.0,      0.0,  0.0,
+        -0.5, -0.5, -0.5,      0.0, -1.0,  0.0,      0.0,  1.0,
+
+        -0.5,  0.5, -0.5,      0.0,  1.0,  0.0,      0.0,  1.0,
+         0.5,  0.5, -0.5,      0.0,  1.0,  0.0,      1.0,  1.0,
+         0.5,  0.5,  0.5,      0.0,  1.0,  0.0,      1.0,  0.0,
+         0.5,  0.5,  0.5,      0.0,  1.0,  0.0,      1.0,  0.0,
+        -0.5,  0.5,  0.5,      0.0,  1.0,  0.0,      0.0,  0.0,
+        -0.5,  0.5, -0.5,      0.0,  1.0,  0.0,      0.0,  1.0
+    ];
+    (NPOS, NNORM, NTEX, stride, vertices)
 }

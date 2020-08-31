@@ -188,3 +188,7 @@ path= "src/ch04_advanced_opengl/05_ex1_mirror/main.rs"
 [[bin]]
 name="ch04_06_1_cubemaps_skybox"
 path= "src/ch04_advanced_opengl/06_1_cubemaps_skybox/main.rs"
+
+[[bin]]
+name="ch04_06_2_cubemaps_env_mapping"
+path= "src/ch04_advanced_opengl/06_2_cubemaps_env_mapping/main.rs"
