@@ -7,6 +7,7 @@ use opengl::{
         create_normals_textured_cube_vao, create_skybox_vao, create_textured_plane_vao,
     },
     cubemap::load_cubemap,
+    model::Model,
     scene,
     shader::Shader,
     util::load_texture,
@@ -16,9 +17,9 @@ use std::ffi::CStr;
 fn main() {
     let mut scene = scene::Scene::default();
     scene.camera = Camera {
-        position: glm::vec3(1.31, 1.27, 3.07),
-        pitch: -16.34,
-        yaw: -105.45,
+        position: glm::vec3(3.23, 16.93, 11.11),
+        pitch: -31.69,
+        yaw: -95.55,
         ..Camera::default()
     };
     scene.camera.update_camera_vectors();
@@ -28,15 +29,18 @@ fn main() {
         shader,
         skybox_shader,
         reflect_shader,
+        refract_shader,
         cube_vao,
         plane_vao,
         skybox_vao,
         floor_texture,
         cubemap_texture,
+        nano_model,
     ) = unsafe {
         let cube_vao = create_normals_textured_cube_vao();
         let plane_vao = create_textured_plane_vao();
         let skybox_vao = create_skybox_vao();
+        let nano_model = Model::new("resources/objects/nanosuit/nanosuit.obj", true);
 
         let floor_texture = load_texture("resources/textures/metal.png", Default::default());
         let cubemap_texture = load_cubemap((
@@ -75,15 +79,26 @@ fn main() {
         reflect_shader.use_program();
         reflect_shader.set_int(c_str!("skybox"), 0);
 
+        let refract_shader = Shader::new(
+            "src/ch04_advanced_opengl/06_2_cubemaps_env_mapping/refract_shader.vert",
+            "src/ch04_advanced_opengl/06_2_cubemaps_env_mapping/refract_shader.frag",
+        )
+        .expect("Failed to create refract shader");
+
+        refract_shader.use_program();
+        refract_shader.set_int(c_str!("skybox"), 0);
+
         (
             shader,
             skybox_shader,
             reflect_shader,
+            refract_shader,
             cube_vao,
             plane_vao,
             skybox_vao,
             floor_texture,
             cubemap_texture,
+            nano_model,
         )
     };
 
@@ -103,17 +118,27 @@ fn main() {
             //
             // Cube
             //
+            refract_shader.use_program();
+            refract_shader.set_mat4(c_str!("projection"), &projection);
+            refract_shader.set_mat4(c_str!("view"), &view);
+            refract_shader.set_vec3(c_str!("camera"), &scene.camera.position);
 
+            gl::BindVertexArray(cube_vao);
+            let model = glm::translate(&glm::Mat4::identity(), &glm::vec3(-1.0, 0.0, -1.0));
+            refract_shader.set_mat4(c_str!("model"), &model);
+            gl::DrawArrays(gl::TRIANGLES, 0, 36);
+
+            //
+            // Model
+            //
             reflect_shader.use_program();
             reflect_shader.set_mat4(c_str!("projection"), &projection);
             reflect_shader.set_mat4(c_str!("view"), &view);
             reflect_shader.set_vec3(c_str!("camera"), &scene.camera.position);
 
-            gl::BindVertexArray(cube_vao);
-
-            let model = glm::translate(&glm::Mat4::identity(), &glm::vec3(-1.0, 0.0, -1.0));
+            let model = glm::translate(&glm::Mat4::identity(), &glm::vec3(1.0, -0.5, -1.0));
             reflect_shader.set_mat4(c_str!("model"), &model);
-            gl::DrawArrays(gl::TRIANGLES, 0, 36);
+            nano_model.draw(&reflect_shader);
 
             //
             // Floor
