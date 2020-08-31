@@ -21,6 +21,11 @@ pub fn create_textured_quad_vao() -> u32 {
     create_textured_vao(npos, ntex, stride, vertices.to_vec())
 }
 
+pub fn create_skybox_vao() -> u32 {
+    let (npos, stride, vertices) = vertices_skybox_pos();
+    create_vao(npos, stride, vertices.to_vec())
+}
+
 pub unsafe fn setup_texture_framebuffer(screen_width: u32, screen_height: u32) -> (u32, u32) {
     // Setup framebuffer
     let mut framebuffer = 0;
@@ -126,6 +131,82 @@ fn create_textured_vao(npos: usize, ntex: usize, stride: i32, vertices: Vec<f32>
         }
         cube_vao
     }
+}
+
+fn create_vao(npos: usize, stride: i32, vertices: Vec<f32>) -> u32 {
+    unsafe {
+        let (mut vbo, mut vao) = (0, 0);
+        gl::GenBuffers(1, &mut vbo);
+        gl::GenVertexArrays(1, &mut vao);
+        {
+            // load vertices into vbo
+            gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
+            gl::BufferData(
+                gl::ARRAY_BUFFER,
+                (vertices.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
+                &vertices[0] as *const f32 as *const c_void,
+                gl::STATIC_DRAW,
+            );
+
+            // vao
+            gl::BindVertexArray(vao);
+            gl::VertexAttribPointer(0, npos as i32, gl::FLOAT, gl::FALSE, stride, ptr::null());
+            gl::EnableVertexAttribArray(0);
+        }
+        vao
+    }
+}
+
+fn vertices_skybox_pos() -> (usize, i32, [f32; 3 * 6 * 6]) {
+    const NPOS: usize = 3;
+    const NROWS: usize = 6;
+    const NSIDES: usize = 6;
+    let stride = NPOS as i32 * mem::size_of::<GLfloat>() as GLsizei;
+    #[rustfmt::skip]
+    let vertices: [f32;  NPOS * NROWS * NSIDES] = [
+       -1.0,  1.0, -1.0,
+       -1.0, -1.0, -1.0,
+        1.0, -1.0, -1.0,
+        1.0, -1.0, -1.0,
+        1.0,  1.0, -1.0,
+       -1.0,  1.0, -1.0,
+
+       -1.0, -1.0,  1.0,
+       -1.0, -1.0, -1.0,
+       -1.0,  1.0, -1.0,
+       -1.0,  1.0, -1.0,
+       -1.0,  1.0,  1.0,
+       -1.0, -1.0,  1.0,
+
+        1.0, -1.0, -1.0,
+        1.0, -1.0,  1.0,
+        1.0,  1.0,  1.0,
+        1.0,  1.0,  1.0,
+        1.0,  1.0, -1.0,
+        1.0, -1.0, -1.0,
+
+       -1.0, -1.0,  1.0,
+       -1.0,  1.0,  1.0,
+        1.0,  1.0,  1.0,
+        1.0,  1.0,  1.0,
+        1.0, -1.0,  1.0,
+       -1.0, -1.0,  1.0,
+
+       -1.0,  1.0, -1.0,
+        1.0,  1.0, -1.0,
+        1.0,  1.0,  1.0,
+        1.0,  1.0,  1.0,
+       -1.0,  1.0,  1.0,
+       -1.0,  1.0, -1.0,
+
+       -1.0, -1.0, -1.0,
+       -1.0, -1.0,  1.0,
+        1.0, -1.0, -1.0,
+        1.0, -1.0, -1.0,
+       -1.0, -1.0,  1.0,
+        1.0, -1.0,  1.0
+    ];
+    (NPOS, stride, vertices)
 }
 
 fn vertices_transparent_pos_tex() -> (usize, usize, i32, [f32; (3 + 2) * 1 * 6]) {

@@ -1,6 +1,7 @@
 pub mod camera;
 pub mod ch02_lighting;
 pub mod ch04_advanced_opengl;
+pub mod cubemap;
 pub mod macros;
 pub mod mesh;
 pub mod model;

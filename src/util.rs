@@ -16,17 +16,21 @@ impl Default for LoadTextureOpts {
     }
 }
 
-pub fn load_texture(path: &str, LoadTextureOpts { vflip, clamp_alpha }: LoadTextureOpts) -> u32 {
-    let mut texture = 0;
-
-    let img = image::open(path).expect("Failed to load texture image");
-    let (format, has_alpha) = match img {
+pub fn img_info(img: &DynamicImage) -> (u32, bool) {
+    match img {
         DynamicImage::ImageLuma8(_) | DynamicImage::ImageLuma16(_) => (gl::RED, false),
         DynamicImage::ImageLumaA8(_) | DynamicImage::ImageLumaA16(_) => (gl::RG, true),
         DynamicImage::ImageRgb8(_) | DynamicImage::ImageRgb16(_) => (gl::RGB, false),
         DynamicImage::ImageRgba8(_) | DynamicImage::ImageRgba16(_) => (gl::RGBA, true),
         DynamicImage::ImageBgr8(_) | DynamicImage::ImageBgra8(_) => (gl::BGR, true),
-    };
+    }
+}
+
+pub fn load_texture(path: &str, LoadTextureOpts { vflip, clamp_alpha }: LoadTextureOpts) -> u32 {
+    let mut texture = 0;
+
+    let img = image::open(path).expect("Failed to load texture image");
+    let (format, has_alpha) = img_info(&img);
 
     let img = if vflip { img.flipv() } else { img };
 
